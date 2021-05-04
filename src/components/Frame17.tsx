@@ -44,8 +44,8 @@ const Frame17: React.FC = () => {
                                     minHeight='10cm'/>
                 </StyledDiv>
                 <StyledDiv flexGrow={1} margin='0 30px 0 0 ' alignSelf='flex-end'>
-                    <StyledButton height='1.5em' width='1.5em' fontSize='3em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='50%'>
-                        +
+                    <StyledButton height='1.5em' width='5em' fontSize='2em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='4px'>
+                        保存
                     </StyledButton>
                 </StyledDiv>
             </FlexBox>
