@@ -11,10 +11,11 @@ const Frame2: React.FC = () => {
     const days = ['', '月', '火', '水', '木', '金', '土'];
 
     return (
-            <StyledDiv width='900px' height='800px' backgroundColor='#fefefe' margin='auto' enableShadow={true}>
+        <StyledDiv margin='5% auto 0 auto'>
+            <StyledDiv width='900px' height='800px' backgroundColor='transparent' margin='auto' enableShadow={false}>
                 <FlexBox flexDirection='column' alignItems='center' justifyContent='space-between'>
                     <StyledDiv margin='auto' height='80px'>
-                        <StyledText size='2em' fontWeight='bold'>
+                        <StyledText size='2em' fontWeight='normal'>
                             時間割
                         </StyledText>
                     </StyledDiv>
@@ -23,8 +24,7 @@ const Frame2: React.FC = () => {
                         array.map((innerArray, index)=>
                             {
                                 return <FlexBox width='auto' flexDirection='column'>{innerArray.map( (value, innerIndex) => {
-                                    return <HoverElement disableShadow={true} disabled={(index === 0 || innerIndex === 0) ? true : false}>
-                                                <StyledDiv  onClick={()=>handleClickMatrix(index, innerIndex)}
+                                    return  <StyledDiv  onClick={()=>handleClickMatrix(index, innerIndex)}
                                                             width={(index===0) ? '180px' : '120px'}
                                                             height='80px'
                                                             isClickable={(innerIndex === 0) ? false : true}
@@ -53,11 +53,10 @@ const Frame2: React.FC = () => {
                                                                         </FlexBox>
                                                                     </StyledDiv>
                                                                 : 
-                                                                        <StyledButton width='100%' height='100%' backgroundColor='transparent' fontSize='1.5em' disableShadow={true}>
+                                                                        <StyledButton width='100%' height='100%' backgroundColor='#fefefe' fontSize='1.5em' disableShadow={true} enableHoverEvent={true}>
                                                                             +
                                                                         </StyledButton>}
                                                 </StyledDiv>
-                                            </HoverElement>
                                 })}
                                 </FlexBox>
                             }
@@ -66,6 +65,7 @@ const Frame2: React.FC = () => {
                     </FlexBox>
                 </FlexBox>
             </StyledDiv>
+        </StyledDiv>
     )
 }
 

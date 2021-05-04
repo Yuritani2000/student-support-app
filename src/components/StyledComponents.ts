@@ -36,6 +36,9 @@ type StyledDivProps = {
   backgroundColor?: string;
   margin?: string;
   enableShadow?: boolean;
+  overflow?: string;
+  alignSelf?: string;
+  borderRadius?: number;
 }
 
 export const StyledDiv = styled.div<StyledDivProps>((props)=> `
@@ -54,6 +57,9 @@ export const StyledDiv = styled.div<StyledDivProps>((props)=> `
   background-color: ${props.backgroundColor ? props.backgroundColor : 'transparent'};
   margin: ${props.margin ? props.margin : 'none'};
   box-shadow: ${props.enableShadow ? '0px 5px 10px rgba(0, 0, 0, 0.1)' : 'none'};
+  overflow: ${props.overflow ? props.overflow : 'visible'};
+  align-self: ${props.alignSelf ? props.alignSelf : 'auto'};
+  border-radius: ${props.borderRadius ? props.borderRadius + 'px' : '0px'};
 `)
 
 type StyledTextProps = {
@@ -87,6 +93,8 @@ type FlexBoxProps = {
   alignItems?: string;
   justifyContent?: string;
   flexGrow?: number;
+  flexWrap?: string;
+  overflow?: string;
 }
 
 /* ${}の中には、JSのようなコードを書いて、propsから受け取った値を記述する。 */
@@ -98,7 +106,9 @@ export const FlexBox = styled.div<FlexBoxProps>(props => `
   align-items: ${props.alignItems ? props.alignItems : 'flex-start'} ;
   justify-content: ${props.justifyContent ? props.justifyContent : 'flex-start'};
   flex-grow: ${props.flexGrow ? props.flexGrow : 0};
-  box-sizing: border-box; 
+  box-sizing: border-box;
+  flex-wrap: ${props.flexWrap ? props.flexWrap : 'nowrap'} ;
+  overflow: ${props.overflow ? props.overflow : 'visible'};
 `);
 
 /* propsの型定義は、用途に応じて適当なものを選ぼう。 */
@@ -135,6 +145,8 @@ type StyledButtonProps = {
   fontColor?: string;
   backgroundColor?: string;
   disableShadow?: boolean;
+  borderRadius?: string;
+  enableHoverEvent?: boolean;
 }
 
 export const StyledButton = styled.button<StyledButtonProps>((props)=> `
@@ -149,6 +161,10 @@ export const StyledButton = styled.button<StyledButtonProps>((props)=> `
   font-size: ${props.fontSize ? props.fontSize : '1em'};
   font-weight: ${ props.fontWeight ? props.fontWeight : 'normal'};
   color: ${props.fontColor ? props.fontColor : '#000000'};
+  border-radius: ${props.borderRadius ? props.borderRadius : '0px'};
+  &:hover{
+    background-color: ${props.enableHoverEvent ? '#87cefa' : props.backgroundColor ? props.backgroundColor  : 'd2d2' };
+  }
 `);
 
 export const ModalBase = styled.div(()=> `
@@ -246,4 +262,66 @@ export const HoverElement = styled.div<HoverElementProps>( (props)=> `
   &:hover{
     visibility: ${props.disabled ? 'none' : 'visible' };
   }
+`);
+
+type StyledTextAreaProps = {
+  width?: string;
+  height?: string;
+  flexGrow?: number;
+  warning?: boolean;
+  backgroundColor?: string;
+  borderRadius?: number;
+  isBorderHidden?: boolean;
+  fontSize?: string;
+  resize?: string;
+  minWidth?: string;
+  minHeight?: string;
+}
+
+export const StyledTextArea = styled.textarea<StyledTextAreaProps>((props) => `
+  width: ${props.width ? props.width : '300px'};
+  height: ${props.height ? props.height : '2em'};
+  flex-grow: ${props.flexGrow ? props.flexGrow : 0};
+  border: ${props.isBorderHidden ? 'none' : 'solid'};
+  border-width: 1px;
+  border-radius: ${props.borderRadius ? props.borderRadius + 'px' :  ( props.borderRadius === 0 ) ? '0px' :'3px'};
+  background-color: ${props.backgroundColor ? props.backgroundColor : '#fffff'};
+  border-color: ${ props.warning ? '#ff0000' : '#000000'};
+  box-sizing: border-box; 
+  font-size: ${ props.fontSize ? props.fontSize : '1em'};
+  resize: ${ props.resize ? props.resize : 'auto'};
+  min-width: ${props.minWidth ? props.minWidth : '0px'};
+  min-height: ${props.minHeight ? props.minHeight : '0px'};
+  font-family: "メイリオ" ;
+`);
+
+export const HoverElement2 = styled.div(()=> `
+  display: none;
+  $:hover{
+    display: block;
+  }
+`)
+
+type StyledSelectProps = {
+  width?: string;
+  height?: string;
+  flexGrow?: number;
+  warning?: boolean;
+  backgroundColor?: string;
+  borderRadius?: number;
+  isBorderHidden?: boolean;
+  fontSize?: string;
+}
+
+export const StyledSelect = styled.select<StyledSelectProps>((props)=> `
+  width: ${props.width ? props.width : '300px'};
+  height: ${props.height ? props.height : '2em'};
+  flex-grow: ${props.flexGrow ? props.flexGrow : 0};
+  border: ${props.isBorderHidden ? 'none' : 'solid'};
+  border-width: 1px;
+  border-radius: ${props.borderRadius ? props.borderRadius + 'px' :  ( props.borderRadius === 0 ) ? '0px' :'3px'};
+  background-color: ${props.backgroundColor ? props.backgroundColor : '#fffff'};
+  border-color: ${ props.warning ? '#ff0000' : '#000000'};
+  box-sizing: border-box; 
+  font-size: ${ props.fontSize ? props.fontSize : '1em'};
 `);
