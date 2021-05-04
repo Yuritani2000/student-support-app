@@ -14,6 +14,7 @@ import Frame11 from './Frame11';
 import Frame15 from './Frame15';
 import Frame10 from './Frame10';
 import Frame14 from './Frame14';
+import Frame3 from './Frame3';
 
 const App: React.FC = () =>{
   return (
@@ -33,6 +34,7 @@ const App: React.FC = () =>{
         <Route path='/frame15' component={Frame15}/>
         <Route path='/frame10' component={Frame10}/>
         <Route path='/frame14' component={Frame14}/>
+        <Route path='/frame3' component={Frame3}/>
       </Switch>
     </BrowserRouter>
   );
