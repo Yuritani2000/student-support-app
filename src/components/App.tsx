@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import firebase from '../firebase'
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Frame1 from './Frame1';
 import Frame2 from './Frame2';
@@ -15,8 +16,14 @@ import Frame15 from './Frame15';
 import Frame10 from './Frame10';
 import Frame14 from './Frame14';
 import Frame3 from './Frame3';
+import Auth from './Auth';
 
 const App: React.FC = () =>{
+
+  useEffect(()=>{
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  });
+
   return (
     <BrowserRouter>
       <Switch>
@@ -35,6 +42,7 @@ const App: React.FC = () =>{
         <Route path='/frame10' component={Frame10}/>
         <Route path='/frame14' component={Frame14}/>
         <Route path='/frame3' component={Frame3}/>
+        <Route path='/' component={Auth}/>
       </Switch>
     </BrowserRouter>
   );

@@ -46,7 +46,7 @@ const Auth:React.FC = () => {
 
         if(signInStatus.isSignedIn){
             console.log('redirect to frame2');
-            return <Frame2/>
+            return <Redirect to='/frame2'/>
         }else{
             console.log('require sign in or up');
             return <Redirect to='/frame1'/>
