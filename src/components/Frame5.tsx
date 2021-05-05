@@ -1,7 +1,15 @@
 import React from 'react';
 import { Parent, Background, StyledDiv, StyledText, FlexBox, StyledInput, StyledButton, ModalBase, RelativeBox, AbsoluteBox } from './StyledComponents';
+import { useHistory } from "react-router-dom";
 
 const Frame1:React.FC = () => {
+
+    const history = useHistory();  
+
+    const OnClockToSignIN = () => {
+        history.push('/frame1');
+    }
+
     return(
         <RelativeBox>
             <Parent width='500px' height='100vh' margin='auto'>
@@ -62,7 +70,7 @@ const Frame1:React.FC = () => {
                             </FlexBox>
                         </StyledDiv>
                         <StyledDiv flexGrow={0.5}>
-                            <StyledText onClick={()=> {}} isClickable={true} fontColor='#1e90ff' size='0.9em' fontWeight='normal'>
+                            <StyledText onClick={()=> { OnClockToSignIN() }} isClickable={true} fontColor='#1e90ff' size='0.9em' fontWeight='normal'>
                                 Sign inはこちら
                             </StyledText>
                         </StyledDiv>
