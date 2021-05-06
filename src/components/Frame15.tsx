@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { isConstructorDeclaration } from 'typescript';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledSelect } from './StyledComponents';
-import firebase, { database } from '../firebase';
-import { OneTaskType } from '../Datatype';
+import firebase, {  taskRef, todoRef } from '../firebase';
+import { OneTaskType } from '../DataTypes/TaskDataTypes';
+import { OneTodoType } from '../DataTypes/TodoDataTypes';
+import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
 
 /* propsの宣言部分。 */
 /* 呼び出し元のコンポーネントから受け取るデータとその型を指定する。 */
@@ -20,7 +21,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
     /* useState()の括弧内はstateの初期値。ここでstateの型も決定する。 */
     const [ subjectSelectDisabled, setSubjectSelectDisabled ] = useState(true); // 科目を選択するselect要素を無効にするか決める
     const [ category, setCategory ] = useState('default');  // 現在選択中のカテゴリ（授業課題かTodoか、未選択か）を保持する
-    const [ subject, setSubject ] = useState('default');    // 現在選択中の科目を保持する
+    const [ subjectId, setSubjectId ] = useState('default');    // 現在選択中の科目を保持する
     const [ taskName, setTaskName ] = useState('');         // 現在入力されているタスクの名前を保持する
     const [ deadline, setDeadline ] = useState('');         // 現在入力されている締め切りを保持する
     const [ isSubmittable, setIsSubmittable ] = useState(false);    // 入力状態が条件を満たし、追加可能な状態かどうかを保持する
@@ -30,11 +31,62 @@ const Frame15: React.FC<Frame15Props> = (props) => {
     const { closeFrame15 } = props;
 
     /* モック用の科目一覧。時間割機能実装後に本物と置き換える必要あり。 */
-    const mockSubjects = ['現代文', '古文', '漢文', '物理', '化学', '生物', '数学IA', '数学IIB', '数学III', '地理A', '地理B', '世界史A', '世界史B', '日本史A', '日本史B', '現代社会', '倫理', '家庭', '体育', '保健', '情報科学', 'アルゴリズムとデータ構造', 'プロジェクト学習'];
+    const mockSubjects: OneSubjectDataType[] = [
+        {
+            key: "dummyKey0",
+            content: {
+                user_id: "dummyUser",
+                name: "国語",
+                memo: "hogehoge",
+                create_at: "2017-05-05 00:00:00.000+0000",
+                update_at: "2017-05-05 00:00:00.000+0000",
+            }
+        },
+        {
+            key: "dummyKey1",
+            content: {
+                user_id: "dummyUser",
+                name: "数学",
+                memo: "hogehoge",
+                create_at: "2017-05-05 00:00:00.000+0000",
+                update_at: "2017-05-05 00:00:00.000+0000",
+            }
+        },
+        {
+            key: "dummyKey2",
+            content: {
+                user_id: "dummyUser",
+                name: "社会",
+                memo: "hogehoge",
+                create_at: "2017-05-05 00:00:00.000+0000",
+                update_at: "2017-05-05 00:00:00.000+0000",
+            }
+        },
+        {
+            key: "dummyKey3",
+            content: {
+                user_id: "dummyUser",
+                name: "理科",
+                memo: "hogehoge",
+                create_at: "2017-05-05 00:00:00.000+0000",
+                update_at: "2017-05-05 00:00:00.000+0000",
+            }
+        },
+        {
+            key: "dummyKey4",
+            content: {
+                user_id: "dummyUser",
+                name: "英語",
+                memo: "hogehoge",
+                create_at: "2017-05-05 00:00:00.000+0000",
+                update_at: "2017-05-05 00:00:00.000+0000",
+            }
+        },
+    ]
 
     /* カテゴリを変更するselectの入力値が変更されたときに呼ばれる */
     const onChangeCategory = (value: string) => {
-        if(value === 'homework'){
+        if(value === 'task'){
             setSubjectSelectDisabled(false);
         }else{
             setSubjectSelectDisabled(true);
@@ -45,7 +97,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
 
     /* 科目を変更するselectの入力値が変更されたときに呼ばれる */
     const onChangeSubject = (value: string) => {
-        setSubject(value);
+        setSubjectId(value);
     }
 
     /* タスク内容の入力値が変更されたときに呼ばれる */
@@ -64,8 +116,8 @@ const Frame15: React.FC<Frame15Props> = (props) => {
         if(category === 'default' || taskName === '' || deadline === ''){
             console.log('some forms are empty');
             setIsSubmittable(false);
-        }else if(category === 'homework' &&　subject === 'default') {
-            console.log('you must select any subject when homework is selected')
+        }else if(category === 'task' &&　subjectId === 'default') {
+            console.log('you must select any subject when task is selected')
             setIsSubmittable(false);
         }else {
             console.log('now you can submit your task!')
@@ -78,10 +130,10 @@ const Frame15: React.FC<Frame15Props> = (props) => {
         if(!isSubmittable){ // 入力が条件を満たさない場合
             setIsWarning(true);
         }else{// 入力が条件を満たす場合
-            pushTask();
+            push();
             closeFrame15();
             setCategory('default');
-            setSubject('default');
+            setSubjectId('default');
             setTaskName('');
             setDeadline('');
             setIsWarning(false);
@@ -89,37 +141,42 @@ const Frame15: React.FC<Frame15Props> = (props) => {
     }
 
     /* Firebaseに実際にタスクデータを送信する。 */
-    const pushTask = () => {
+    const push = () => {
         const now = new Date(); // タイムスタンプ用のdateオブジェクト
         const currentTimeStamp = now.getTime(); // 1970年からの現在の時刻を、ミリ秒単位で取得する。
         const user = firebase.auth().currentUser;   // 現在ログインしているユーザーを取得する。
-        if(!user){// nullチェック
-            console.log('Task push failed: could not get user information.');
-            return;
-        }
+        if(!user){/* nullチェック */ return; }
         const userId = user.uid;// ユーザーIDの取得
-        if(!userId){    // nullチェック
-            console.log('Task push failed: could not get user ID.');
-            return;
+        if(!userId){/* nullチェック */ return; }
+        if(category === 'task'){// pushするものがTaskの場合
+            if(subjectId === 'default') return;   // subjectのnullチェック再び
+            // 新しいTaskを生成
+            const newTask: OneTaskType = {
+                subject_id: subjectId,   // !個々の部分は、科目登録機能を実装したら即座に修正する!
+                user_id: userId,
+                title: taskName,
+                deadline: deadline,
+                create_at: now.toString(),
+                update_at: now.toString(),
+            }
+            if(!taskRef) return;
+            taskRef.push(newTask);
+        }else{// pushするものがTodoの場合
+            const newTodo: OneTodoType = {
+                user_id: userId,
+                title: taskName,
+                deadline: deadline,
+                create_at: now.toString(),
+                update_at: now.toString(),
+            }
+            if(!todoRef) return;
+            todoRef.push(newTodo);
         }
-        console.log('current user ID: ' + user.uid);
-        const taskRef = database.ref('yuritani_demo/' + user.uid + '/task');    // ユーザーのタスクを格納しているpathの参照を取得。
-        const newTask: OneTaskType = {  // 新しいデータのオブジェクト（オブジェクト）を作成。このデータの型定義は別ファイルにしてある。
-            category: category,
-            subject: subject,
-            name: taskName,
-            deadline: deadline,
-            isDone: false,
-            createdAt: currentTimeStamp,
-            updatedAt: currentTimeStamp
-        };
-        if(!taskRef) return;    // nullチェック
-        taskRef.push(newTask);
     }
     
     /* useEffectは、コンポーネントの再描写の前後に呼ばれる関数。 */
     /* 今回は、第2引数に指定したstateが変化するたびに呼ばれる。 */
-    useEffect(checkSubmittable, [category, subject, taskName, deadline]);
+    useEffect(checkSubmittable, [category, subjectId, taskName, deadline]);
 
     /* 実際に画面に描写するJSXを記述する */
     /* StyledComponentsにpropsを渡すことで、柔軟にデザインを変更することができる。 */
@@ -158,24 +215,24 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                                             height='2.0em'
                                             borderColor={(isWarning && (category==='default')) ? '#ff0000' : ''}>
                                 <option value='default'>カテゴリーを選択</option>
-                                <option value='homework'>授業課題</option>
+                                <option value='task'>授業課題</option>
                                 <option value='todo'>ToDo</option>
                             </StyledSelect>
                         </FlexBox>
                         <FlexBox alignItems='center'>
                             <StyledText width='8em' size='1.5em'>科目名</StyledText>
                             {/* このselect要素のonChangeに、状態変化時の動作を記述する。 */}
-                            <StyledSelect   value={subject}
+                            <StyledSelect   value={subjectId}
                                             onChange={(e)=> onChangeSubject(e.target.value)}
                                             disabled={subjectSelectDisabled}
                                             width='100%'
                                             fontSize='1.5em'
                                             height='2.0em'
-                                            borderColor={(isWarning && subject==='default') ? '#ff0000' : ''}>
+                                            borderColor={(isWarning && subjectId ==='default') ? '#ff0000' : ''}>
                                 <option value='default'>科目を選択</option>
                                 {
                                     mockSubjects.map((item) => {
-                                        return <option value={item}>{item}</option>
+                                        return <option value={item.key}>{item.content.name}</option>
                                     })
                                 }
                             </StyledSelect>

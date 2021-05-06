@@ -4,7 +4,7 @@ import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement
 import CheckButton from './CheckButton';
 import { Redirect } from 'react-router-dom';
 import Frame15 from './Frame15';
-import { OneDataType, OneTaskType, DataType } from '../Datatype';
+import { OneDataType, OneTaskType, DataType } from '../DataTypes/TaskDataTypes';
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 

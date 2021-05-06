@@ -28,4 +28,11 @@ const {
 firebase.initializeApp(firebaseConfig);
 export const database = firebase.database();
 
+
+// それぞれのpathへの参照をここに記述すると良き。
+
+export const taskRef = database.ref('task');
+
+export const todoRef = database.ref('todo');
+
 export default firebase;
