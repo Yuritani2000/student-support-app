@@ -4,24 +4,35 @@ import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledSelect
 import firebase, { database } from '../firebase';
 import { OneTaskType } from '../Datatype';
 
+/* propsの宣言部分。 */
+/* 呼び出し元のコンポーネントから受け取るデータとその型を指定する。 */
+/* props名: データ型; で宣言する。必須のpropsはこのように記述する。*/
+/* props名?: データ型;　で宣言すると、このprops任意のpropsとすることができる。*/
 type Frame15Props = {
-    closeFrame15: () => void;
+    closeFrame15: () => void;   // frame15を閉じるための関数。
 }
 
-
+/* Reactコンポーネントの本体。Hooksという記法で書いている。 */
+/* <>の内側に先ほどの型定義を当てはめる。()内の「props」に、実際の値が渡ってくる。 */
 const Frame15: React.FC<Frame15Props> = (props) => {
-    const [ subjectSelectDisabled, setSubjectSelectDisabled ] = useState(true);
-    const [ category, setCategory ] = useState('default');
-    const [ subject, setSubject ] = useState('default');
-    const [ taskName, setTaskName ] = useState('');
-    const [ deadline, setDeadline ] = useState('');
-    const [ isSubmittable, setIsSubmittable ] = useState(false);
-    const [ isWarning, setIsWarning ] = useState(false);
+    /* stateの宣言箇所 */
+    /* 左が実際に参照するstate、右がstateを更新するためのメソッド */
+    /* useState()の括弧内はstateの初期値。ここでstateの型も決定する。 */
+    const [ subjectSelectDisabled, setSubjectSelectDisabled ] = useState(true); // 科目を選択するselect要素を無効にするか決める
+    const [ category, setCategory ] = useState('default');  // 現在選択中のカテゴリ（授業課題かTodoか、未選択か）を保持する
+    const [ subject, setSubject ] = useState('default');    // 現在選択中の科目を保持する
+    const [ taskName, setTaskName ] = useState('');         // 現在入力されているタスクの名前を保持する
+    const [ deadline, setDeadline ] = useState('');         // 現在入力されている締め切りを保持する
+    const [ isSubmittable, setIsSubmittable ] = useState(false);    // 入力状態が条件を満たし、追加可能な状態かどうかを保持する
+    const [ isWarning, setIsWarning ] = useState(false);    // 画面に警告（各入力欄を赤枠で示す）を表示するかを保持する
 
+    /* 渡ってきたpropsを各変数に展開する。 */
     const { closeFrame15 } = props;
 
+    /* モック用の科目一覧。時間割機能実装後に本物と置き換える必要あり。 */
     const mockSubjects = ['現代文', '古文', '漢文', '物理', '化学', '生物', '数学IA', '数学IIB', '数学III', '地理A', '地理B', '世界史A', '世界史B', '日本史A', '日本史B', '現代社会', '倫理', '家庭', '体育', '保健', '情報科学', 'アルゴリズムとデータ構造', 'プロジェクト学習'];
 
+    /* カテゴリを変更するselectの入力値が変更されたときに呼ばれる */
     const onChangeCategory = (value: string) => {
         if(value === 'homework'){
             setSubjectSelectDisabled(false);
@@ -32,18 +43,22 @@ const Frame15: React.FC<Frame15Props> = (props) => {
         setCategory(value);
     }
 
+    /* 科目を変更するselectの入力値が変更されたときに呼ばれる */
     const onChangeSubject = (value: string) => {
         setSubject(value);
     }
 
+    /* タスク内容の入力値が変更されたときに呼ばれる */
     const onChangeTaskName = (value: string) => {
         setTaskName(value);
     }
 
+    /* 締め切りの入力値が変更されると呼ばれる */
     const onChangeDeadline = (value: string) => {
         setDeadline(value);
     }
 
+    /* 入力値が条件を満たしているか確かめる。 */
     const checkSubmittable = () => {
         console.log('check if submittable')
         if(category === 'default' || taskName === '' || deadline === ''){
@@ -58,10 +73,11 @@ const Frame15: React.FC<Frame15Props> = (props) => {
         }
     }
     
+    /* 「追加」ボタンをクリックすると呼ばれる。 */
     const onSubmit = () => {
-        if(!isSubmittable){
+        if(!isSubmittable){ // 入力が条件を満たさない場合
             setIsWarning(true);
-        }else{
+        }else{// 入力が条件を満たす場合
             pushTask();
             closeFrame15();
             setCategory('default');
@@ -72,22 +88,23 @@ const Frame15: React.FC<Frame15Props> = (props) => {
         }
     }
 
+    /* Firebaseに実際にタスクデータを送信する。 */
     const pushTask = () => {
-        const now = new Date();
-        const currentTimeStamp = now.getTime();
-        const user = firebase.auth().currentUser;
-        if(!user){
+        const now = new Date(); // タイムスタンプ用のdateオブジェクト
+        const currentTimeStamp = now.getTime(); // 1970年からの現在の時刻を、ミリ秒単位で取得する。
+        const user = firebase.auth().currentUser;   // 現在ログインしているユーザーを取得する。
+        if(!user){// nullチェック
             console.log('Task push failed: could not get user information.');
             return;
         }
-        const userId = user.uid;
-        if(!userId){
+        const userId = user.uid;// ユーザーIDの取得
+        if(!userId){    // nullチェック
             console.log('Task push failed: could not get user ID.');
             return;
         }
         console.log('current user ID: ' + user.uid);
-        const taskRef = database.ref('yuritani_demo/' + user.uid + '/task');
-        const newTask: OneTaskType = {
+        const taskRef = database.ref('yuritani_demo/' + user.uid + '/task');    // ユーザーのタスクを格納しているpathの参照を取得。
+        const newTask: OneTaskType = {  // 新しいデータのオブジェクト（オブジェクト）を作成。このデータの型定義は別ファイルにしてある。
             category: category,
             subject: subject,
             name: taskName,
@@ -96,11 +113,16 @@ const Frame15: React.FC<Frame15Props> = (props) => {
             createdAt: currentTimeStamp,
             updatedAt: currentTimeStamp
         };
+        if(!taskRef) return;    // nullチェック
         taskRef.push(newTask);
     }
     
+    /* useEffectは、コンポーネントの再描写の前後に呼ばれる関数。 */
+    /* 今回は、第2引数に指定したstateが変化するたびに呼ばれる。 */
     useEffect(checkSubmittable, [category, subject, taskName, deadline]);
 
+    /* 実際に画面に描写するJSXを記述する */
+    /* StyledComponentsにpropsを渡すことで、柔軟にデザインを変更することができる。 */
     return (
         <StyledDiv  margin='10% auto 0 auto'
                     width='min( calc(683px + (100vw - 683px)*0.1 ), 100vw )'
@@ -112,6 +134,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                         alignItems='center'
                         justifyContent='space-around'>
                 <StyledDiv flexGrow={0.5} height='3em' margin='20px 0 0 20px ' alignSelf='flex-start'>
+                    {/* このボタン要素のonClickに、クリック時の動作を記述する。 */}
                     <StyledButton onClick={()=>{setIsWarning(false);closeFrame15()}} width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
                         戻る
                     </StyledButton>
@@ -127,6 +150,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                     <FlexBox flexDirection='column'>
                         <FlexBox alignItems='center'>
                             <StyledText width='8em' size='1.5em'>カテゴリー</StyledText>
+                            {/* このselect要素のonChangeに、状態変化時の動作を記述する。 */}
                             <StyledSelect   value={category}
                                             onChange={(e)=> onChangeCategory(e.target.value)}
                                             width='100%'
@@ -140,6 +164,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                         </FlexBox>
                         <FlexBox alignItems='center'>
                             <StyledText width='8em' size='1.5em'>科目名</StyledText>
+                            {/* このselect要素のonChangeに、状態変化時の動作を記述する。 */}
                             <StyledSelect   value={subject}
                                             onChange={(e)=> onChangeSubject(e.target.value)}
                                             disabled={subjectSelectDisabled}
@@ -157,6 +182,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                         </FlexBox>
                         <FlexBox alignItems='center'>
                             <StyledText width='8em' size='1.5em'>内容</StyledText>
+                            {/* このinput要素のonChangeに、状態変化時の動作を記述する。 */}
                             <StyledInput    value={taskName}
                                             onChange={(e) => {onChangeTaskName(e.target.value)}}
                                             type='text'
@@ -168,6 +194,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                         </FlexBox>
                         <FlexBox alignItems='center'>
                             <StyledText width='8em' size='1.5em'>期限</StyledText>
+                            {/* このinput要素のonChangeに、状態変化時の動作を記述する。 */}
                             <StyledInput    value={deadline}
                                             onChange={(e) => {onChangeDeadline(e.target.value)}}
                                             type='date'
@@ -180,6 +207,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                     </FlexBox>
                 </StyledDiv>
                 <StyledDiv flexGrow={2} width='50%' margin ='20px 0 0 0 '>
+                    {/* このボタン要素のonClickに、クリック時の動作を記述する。 */}
                     <StyledButton onClick={()=>{onSubmit()}} width='100%' height='2.0em' backgroundColor={isSubmittable ? '#87cefa' : '' } fontColor={isSubmittable ? '#000000' : '#fefefe'} fontSize='1.5em' fontWeight='bold'  >
                         追加
                     </StyledButton>

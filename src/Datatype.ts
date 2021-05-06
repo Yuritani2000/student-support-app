@@ -1,4 +1,4 @@
-export type TasksType = OneTaskType[];
+/* TypeScriptでオブジェクトを定義するときには、このようにオブジェクト内の値の型を定義する。 */
 
 export type DataType = OneDataType[];
 
