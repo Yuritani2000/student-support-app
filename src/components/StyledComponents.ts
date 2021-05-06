@@ -26,6 +26,7 @@ type StyledDivProps = {
   height?: string;
   flexGrow?: number;
   isHidden?: boolean;
+  noDisplay?: boolean;
   isClickable?: boolean;
   showBorder?: boolean;
   borderTopWidth?: number;
@@ -47,6 +48,7 @@ export const StyledDiv = styled.div<StyledDivProps>((props)=> `
   flex-grow: ${props.flexGrow ? props.flexGrow : 0};
   box-sizing: border-box; 
   visibility: ${props.isHidden ? 'hidden' : 'visible'};
+  display: ${props.noDisplay ? 'none' : 'block'};
   cursor: ${props.isClickable ? 'pointer' : 'default'};
   border: ${props.showBorder ? 'solid' : 'none'};
   border-top-width: ${props.borderTopWidth ? props.borderTopWidth + 'px' : (props.borderTopWidth === 0 ) ? '0px' : '1px'};
@@ -121,6 +123,7 @@ type StyledInputProps = {
   borderRadius?: number;
   isBorderHidden?: boolean;
   fontSize?: string;
+  borderColor?: string;
 }
 
 export const StyledInput = styled.input<StyledInputProps>((props)=> `
@@ -134,6 +137,7 @@ export const StyledInput = styled.input<StyledInputProps>((props)=> `
   border-color: ${ props.warning ? '#ff0000' : '#000000'};
   box-sizing: border-box; 
   font-size: ${ props.fontSize ? props.fontSize : '1em'};
+  border-color: ${props.borderColor ? props.borderColor : '#000000'};
 `);
 
 type StyledButtonProps = {
@@ -311,6 +315,7 @@ type StyledSelectProps = {
   borderRadius?: number;
   isBorderHidden?: boolean;
   fontSize?: string;
+  borderColor?: string;
 }
 
 export const StyledSelect = styled.select<StyledSelectProps>((props)=> `
@@ -324,4 +329,5 @@ export const StyledSelect = styled.select<StyledSelectProps>((props)=> `
   border-color: ${ props.warning ? '#ff0000' : '#000000'};
   box-sizing: border-box; 
   font-size: ${ props.fontSize ? props.fontSize : '1em'};
+  border-color: ${props.borderColor ? props.borderColor : '#000000'};
 `);

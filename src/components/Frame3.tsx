@@ -10,7 +10,7 @@ const Frame3: React.FC = () => {
 
     const render = () => {
         if(firebase.auth().currentUser){
-            console.log('signed in as: ' + firebase.auth().currentUser?.email);
+            console.log('signed in as: ' + firebase.auth().currentUser?.email + '(ser ID: ' + firebase.auth().currentUser?.uid +  ')');
             return (
                 <StyledDiv  margin='3% auto 0 auto'
                 width='min( calc(683px + (100vw - 683px)*0.4 ), 100vw )'
