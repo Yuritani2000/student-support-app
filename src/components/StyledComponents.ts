@@ -285,7 +285,7 @@ type StyledTextAreaProps = {
   fontSize?: string;
   resize?: string;            // autoで自由自在に大きさ調整可能。noneで大きさ調整不可
   minWidth?: string;          // 最小幅
-  minHeight?: string;         // 最大幅
+  minHeight?: string;         // 最小高さ
 }
 
 export const StyledTextArea = styled.textarea<StyledTextAreaProps>((props) => `
