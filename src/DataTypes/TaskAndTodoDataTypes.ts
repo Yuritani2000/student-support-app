@@ -1,15 +1,12 @@
 /* TypeScriptでオブジェクトを定義するときには、このようにオブジェクト内の値の型を定義する。 */
 
-export type DataType = OneTaskDataType[];
-
-export type OneTaskDataType = {
-    key: string;
-    content: OneTaskType;
+export type TaskAndTodoDataType = {
+    id: string;
+    content: TaskAndTodoType;
 }
 
-export type OneTaskType = {
+export type TaskAndTodoType = {
     subject_id: string;
-    user_id: string;
     title: string;
     deadline: string;
     create_at: string;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledSelect } from './StyledComponents';
-import firebase, {  taskRef, todoRef } from '../firebase';
-import { OneTaskType } from '../DataTypes/TaskDataTypes';
-import { OneTodoType } from '../DataTypes/TodoDataTypes';
+import firebase, { taskAndTodoRef } from '../firebase';
+import { TaskAndTodoType } from '../DataTypes/TaskAndTodoDataTypes';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
 
 /* propsの宣言部分。 */
@@ -90,6 +89,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
             setSubjectSelectDisabled(false);
         }else{
             setSubjectSelectDisabled(true);
+            setSubjectId('default');
         }
         console.log('category selected: ' + value);
         setCategory(value);
@@ -148,30 +148,17 @@ const Frame15: React.FC<Frame15Props> = (props) => {
         if(!user){/* nullチェック */ return; }
         const userId = user.uid;// ユーザーIDの取得
         if(!userId){/* nullチェック */ return; }
-        if(category === 'task'){// pushするものがTaskの場合
-            if(subjectId === 'default') return;   // subjectのnullチェック再び
-            // 新しいTaskを生成
-            const newTask: OneTaskType = {
-                subject_id: subjectId,   // !個々の部分は、科目登録機能を実装したら即座に修正する!
-                user_id: userId,
-                title: taskName,
-                deadline: deadline,
-                create_at: now.toString(),
-                update_at: now.toString(),
-            }
-            if(!taskRef) return;
-            taskRef.push(newTask);
-        }else{// pushするものがTodoの場合
-            const newTodo: OneTodoType = {
-                user_id: userId,
-                title: taskName,
-                deadline: deadline,
-                create_at: now.toString(),
-                update_at: now.toString(),
-            }
-            if(!todoRef) return;
-            todoRef.push(newTodo);
+        console.log('post task as: ' + userId);
+        const listRef = taskAndTodoRef.child(userId);
+        const newObject: TaskAndTodoType = {
+            subject_id: subjectId,
+            title: taskName,
+            deadline: deadline,
+            create_at: now.toString(),
+            update_at: now.toString(),
         }
+        if(!listRef) return;
+        listRef.push(newObject);
     }
     
     /* useEffectは、コンポーネントの再描写の前後に呼ばれる関数。 */

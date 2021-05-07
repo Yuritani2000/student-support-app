@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import firebase, { database } from '../firebase';
+import firebase, { taskAndTodoRef } from '../firebase';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect, AbsoluteBox} from './StyledComponents';
 import CheckButton from './CheckButton';
 import { Redirect } from 'react-router-dom';
 import Frame15 from './Frame15';
-import { OneDataType, OneTaskType, DataType } from '../DataTypes/TaskDataTypes';
+import { TaskAndTodoDataType } from '../DataTypes/TaskAndTodoDataTypes';
+import { isTemplateExpression } from 'typescript';
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
 /* propsを受け取らないときは、<>は必要ない。 */
 const Frame10: React.FC = () => {
     const [ isOpeningFrame15, setIsOpeningFrame15 ] = useState(false);  // frame15が開いているかを管理する
-    const [ tasks, setTasks ] = useState([] as DataType);   // タスクのデータが配列になって入っている。この配列データの型定義は別ファイルを参照。   
+    const [ tasks, setTasks ] = useState([] as TaskAndTodoDataType[]);   // タスクのデータが配列になって入っている。この配列データの型定義は別ファイルを参照。   
     const [ filter, setFilter ] = useState('all');  // 表示するタスクの絞り込み条件を記述する。
 
     /* frame15を開く関数 */
@@ -30,47 +31,25 @@ const Frame10: React.FC = () => {
     }
 
     /* 各タスクの削除ボタンが押されたときに動作するようにしてある */
-    const deleteTask = (targetKey: string) => {
+    const deleteTask = (targetId: string) => {
         // ユーザーのタスクデータへの参照を取得
         const user = firebase.auth().currentUser;
         if(!user) return;
         const userId = user.uid;
         if(!userId) return;
-        const taskRef = database.ref('yuritani_demo/' + user.uid + '/task');
 
         // 現在のタスク一覧から、対象のタスクを取得
-        const targetTask = tasks.find((item) => item.key === targetKey);
+        const targetTask = tasks.find((item) => item.id === targetId);
         if(!targetTask) return;
         // 対象のタスクへの参照を取得
-        const targetTaskRef = taskRef.child('/' + targetTask.key);
-        if(!targetTaskRef) return;
+        const listRef = taskAndTodoRef.child(userId);
+        const targetRef = listRef.child('/' + targetTask.id);
+        if(!targetRef) return;
         // データベース上から対象のタスクを削除
-        targetTaskRef.remove();
+        targetRef.remove();
         // 一つしかないデータを削除したときは何故かuseEffectのonが呼ばれない。
         // あまり良くない方法だが変更がDBに反映されたことを前提として表示を消去する。
         if(tasks.length === 1) setTasks([]);
-    }
-
-    /* 各タスクのチェックボタンが押されたときに動作するようにしてある */
-    const checkTask = (targetKey: string) => {
-        // ユーザーのタスクデータへの参照を取得
-        const user = firebase.auth().currentUser;
-        if(!user) return;
-        const userId = user.uid;
-        if(!userId) return;
-        const taskRef = database.ref('yuritani_demo/' + user.uid + '/task');
-
-        // 現在のタスク一覧から、対象のタスクを取得
-        const targetTask = tasks.find((item) => item.key === targetKey);
-        if(!targetTask) return;
-        // 対象のタスクへの参照を取得 ここまでやってることはdeleteTaskと全く同じ
-        const targetTaskRef = taskRef.child('/' + targetTask.key);
-        if(!targetTaskRef) return;
-        // 属性を指定して更新
-        targetTaskRef.update({
-            "isDone": !targetTask.content.isDone,
-            "updatedAt": new Date().getTime()
-        });
     }
 
     // useEffectは、コンポーネントの再描写が行われる前後に自動的に呼び出される関数。
@@ -84,33 +63,33 @@ const Frame10: React.FC = () => {
         const userId = user.uid;
         if(!userId) return;
         // pathを指定して、データへの参照を取得。
-        const taskRef = database.ref('yuritani_demo/' + user.uid + '/task');
-        if(!taskRef) return;
+        const listRef = taskAndTodoRef.child(userId);
+        if(!listRef) return;
         // onメソッドは、参照先のデータを取得するメソッド。
-        taskRef.on('value', (snapshot) => {
+        listRef.on('value', (snapshot) => {
             const tasks = snapshot.val();
             if(tasks === null) return;
             // entriesには、オブジェクトのキー値（自動生成されたもの）と、中身の値（オブジェクト）のペアが配列になって返ってくるようだ。
             const entries = Object.entries(tasks);
             // entriesをオブジェクトに直す
             const gainedData = entries.map((data) => {
-                const [ key, task ] = data;
-                return { key: key, content: task }
+                const [ id, task ] = data;
+                return { id: id, content: task }
             })
             // stateにデータを保持
             // gainedDataは型が決まっていないので、DataTypeにキャストする。
-            const gainedTasks: DataType = gainedData as DataType;
+            const gainedTasks: TaskAndTodoDataType[] = gainedData as TaskAndTodoDataType[];
             setTasks(gainedTasks);
         })
     }, []);
 
     /* タスクの配列を受け取って、filterのstateに定めた条件に従って絞り込みを行う。 */
-    const filterTasks = (tasks: DataType) => {
-
-        // filteredTasks = tasks.filter((item)=> item.content.isDone === false);
-        if(filter !== 'all'){
-            return tasks.filter((item)=> item.content.category === filter)
-        }else{
+    const filterTasks = (tasks: TaskAndTodoDataType[]) => {
+        if(filter === 'task'){
+            return tasks.filter((item) => item.content.subject_id !== 'default');
+        }else if (filter === 'todo'){
+            return tasks.filter((item) => item.content.subject_id === 'default');
+        }else {
             return tasks;
         }
     };
@@ -148,7 +127,7 @@ const Frame10: React.FC = () => {
                                                         fontSize='1.5em'
                                                         height='2.0em'>
                                         <option value='all'>全てのToDo</option>
-                                        <option value='homework'>授業課題</option>
+                                        <option value='task'>授業課題</option>
                                         <option value='todo'>ToDo</option>
                                     </StyledSelect>
                                 </StyledDiv>
@@ -168,16 +147,15 @@ const Frame10: React.FC = () => {
                                 {/* map関数を使うとその中では配列の中の各値がitemとして取得できる。各々を描写する処理をfor文のように記述できる。 */}
                                 {
                                     filterTasks(tasks).map((item) => {
-                                        return  <StyledDiv key={item.key} width='100%' enableShadow={true} margin='20px 20px 0 0' backgroundColor='#fefefe' borderRadius={4}>
+                                        return  <StyledDiv key={item.id} width='100%' enableShadow={true} margin='20px 20px 0 0' backgroundColor='#fefefe' borderRadius={4}>
                                                     <FlexBox justifyContent='space-around' flexDirection='row' alignItems='center' height='4.5em' >
-                                                        <CheckButton onClick={/* ここにチェックボックスの処理を記述している */()=> { checkTask(item.key)}} isChecked={item.content.isDone} width='4.5rem' height='4.5rem'/>
                                                         <StyledText size='1.7em' width='45%' >
-                                                            {item.content.name}
+                                                            {item.content.title}
                                                         </StyledText>
                                                         <StyledText size='1.7em' width='40%'>
                                                             {item.content.deadline.slice(0, 4)} / {item.content.deadline.slice(5, 7)} / {item.content.deadline.slice(8)}
                                                         </StyledText>
-                                                        <StyledButton onClick={/*ここに削除ボタンの処理を記述している。*/()=> {deleteTask(item.key)}} width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
+                                                        <StyledButton onClick={/*ここに削除ボタンの処理を記述している。*/()=> {deleteTask(item.id)}} width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
                                                             削除
                                                         </StyledButton>
                                                     </FlexBox>
