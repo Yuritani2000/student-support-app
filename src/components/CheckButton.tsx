@@ -5,14 +5,17 @@ type CheckButtonProps ={
     width?: string;
     height?: string;
     isChecked: boolean;
+    onClick?: () => void;
 }
 
 const CheckButton:React.FC<CheckButtonProps> = (props) => {
     const{  width,
             height,
-            isChecked} = props;
+            isChecked, 
+            onClick = ()=> {}} = props;
     return (
-        <StyledDiv width={width}
+        <StyledDiv  onClick={onClick}
+                    width={width}
                     height={height}>
             <CheckElement1 isHidden={!isChecked}/>
             <CheckElement2 isHidden={!isChecked}/>
@@ -33,6 +36,7 @@ const StyledDiv = styled.div<StyledDivProps>((props)=> `
     height: ${props.height ? props.height  : 'auto'};
     background-color: transparent;
     position: relative;
+    cursor: pointer;
 `);
 
 const CheckElement1 = styled.div<{isHidden: boolean}>((props)=> `

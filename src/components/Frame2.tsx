@@ -15,7 +15,7 @@ const Frame2: React.FC = () => {
 
     const render = () =>{
         if(firebase.auth().currentUser){
-            console.log('signed in as: ' + firebase.auth().currentUser?.email);
+            console.log('signed in as: ' + firebase.auth().currentUser?.email + '(ser ID: ' + firebase.auth().currentUser?.uid +  ')');
             return (
                 <StyledDiv margin='5% auto 0 auto'>
                     <StyledDiv width='900px' height='800px' backgroundColor='transparent' margin='auto' enableShadow={false}>
