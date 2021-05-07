@@ -147,15 +147,17 @@ const Frame10: React.FC = () => {
                                 {/* map関数を使うとその中では配列の中の各値がitemとして取得できる。各々を描写する処理をfor文のように記述できる。 */}
                                 {
                                     filterTasks(tasks).map((item) => {
-                                        return  <StyledDiv key={item.id} width='100%' enableShadow={true} margin='20px 20px 0 0' backgroundColor='#fefefe' borderRadius={4}>
-                                                    <FlexBox justifyContent='space-around' flexDirection='row' alignItems='center' height='4.5em' >
-                                                        <StyledText size='1.7em' width='45%' >
-                                                            {item.content.title}
-                                                        </StyledText>
+                                        return  <StyledDiv key={item.id} width='100%' enableShadow={true} margin='20px 0 0 0' backgroundColor='#fefefe' borderRadius={4}>
+                                                    <FlexBox justifyContent='space-between' flexDirection='row' alignItems='center' height='4.5em' >
+                                                        <StyledDiv margin='0 0 0 10px' width='45%' overflowWrap='break-word' >
+                                                            <StyledText size='1.7em' >
+                                                                {item.content.title}
+                                                            </StyledText>
+                                                        </StyledDiv>
                                                         <StyledText size='1.7em' width='40%'>
                                                             {item.content.deadline.slice(0, 4)} / {item.content.deadline.slice(5, 7)} / {item.content.deadline.slice(8)}
                                                         </StyledText>
-                                                        <StyledButton onClick={/*ここに削除ボタンの処理を記述している。*/()=> {deleteTask(item.id)}} width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
+                                                        <StyledButton onClick={/*ここに削除ボタンの処理を記述している。*/()=> {deleteTask(item.id)}} width='4.5rem' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
                                                             削除
                                                         </StyledButton>
                                                     </FlexBox>

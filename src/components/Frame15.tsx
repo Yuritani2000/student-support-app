@@ -132,7 +132,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
         }else{// 入力が条件を満たす場合
             push();
             closeFrame15();
-            setCategory('default');
+            onChangeCategory('default');
             setSubjectId('default');
             setTaskName('');
             setDeadline('');

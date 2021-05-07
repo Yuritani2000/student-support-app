@@ -43,6 +43,7 @@ type StyledDivProps = {
   overflow?: string;              // 要素がはみ出したときの動作を記述する
   alignSelf?: string;             // FlexBox要素に入れたときに、どこに寄せるかを記述する。指定しないとFlexBoxで指定した設定になる
   borderRadius?: number;          // 角の丸みをpx単位で指定。
+  overflowWrap?: string;          // 文字列の折り返しを指定するときに使う。
 }
 
 export const StyledDiv = styled.div<StyledDivProps>((props)=> `
@@ -65,6 +66,7 @@ export const StyledDiv = styled.div<StyledDivProps>((props)=> `
   overflow: ${props.overflow ? props.overflow : 'visible'};
   align-self: ${props.alignSelf ? props.alignSelf : 'auto'};
   border-radius: ${props.borderRadius ? props.borderRadius + 'px' : '0px'};
+  overflow-wrap: ${props.overflowWrap ? props.overflowWrap : 'normal'};
 `)
 
 type StyledTextProps = {
