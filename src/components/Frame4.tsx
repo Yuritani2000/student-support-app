@@ -1,11 +1,17 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import firebase from '../firebase';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect ,AbsoluteBox, FixedBox} from './StyledComponents';
+=======
+import React, { useState, useEffect } from 'react';
+import firebase, { memoRef } from '../firebase';
+import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect, AbsoluteBox} from './StyledComponents';
+>>>>>>> 843143e... [rebase]develop
 import { Redirect } from 'react-router-dom';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
 
-const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
+
 
 const Frame10: React.FC = () => {
 
@@ -18,6 +24,8 @@ const Frame10: React.FC = () => {
     const closeFrame7 = () =>{
         setIsOpeningFrame7(false);
     }
+
+
 
     const render = () => {
         if(firebase.auth().currentUser){
@@ -47,7 +55,7 @@ const Frame10: React.FC = () => {
                             </FlexBox>
                         </StyledDiv>
                         <StyledDiv flexGrow={1} margin='0 30px 0 0 ' alignSelf='flex-end'>
-                            <StyledButton height='1.5em' width='1.5em' fontSize='3em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='50%'>
+                            <StyledButton onClick={()=>{ openFrame13() }} height='1.5em' width='1.5em' fontSize='3em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='50%'>
                                 +
                             </StyledButton>
                         </StyledDiv>
@@ -71,12 +79,23 @@ const Frame10: React.FC = () => {
                             </FlexBox>
                         </StyledDiv>
                     </FlexBox>
+<<<<<<< HEAD
                     <StyledDiv noDisplay={!isOpeningFrame7} >
                        <FixedBox>
                          <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
                            <Frame7 closeFrame7={closeFrame7}/>
                          </StyledDiv>
                        </FixedBox>
+=======
+                    <StyledDiv noDisplay={!isOpeningFrame13}> 
+                        <AbsoluteBox top='0%' left='0%'>
+                            <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0,0,0,0.2)'>
+                                <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
+                                    <Frame13 closeFrame13={closeFrame13}/>
+                                </AbsoluteBox>
+                            </StyledDiv>
+                        </AbsoluteBox>
+>>>>>>> 843143e... [rebase]develop
                     </StyledDiv>
                 </StyledDiv>
             )

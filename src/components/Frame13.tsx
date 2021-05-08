@@ -1,10 +1,15 @@
 import React from 'react';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledTextArea } from './StyledComponents';
 
-const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
-const Frame13: React.FC = () => {
 
+type Frame13Props = {
+    closeFrame13: () => void;   // frame15を閉じるための関数。
+    //viewmemo: ()=> 1; //選択肢したメモのidを渡す変数
+}
+
+const Frame13: React.FC<Frame13Props> = (props) => {
+    const { closeFrame13 } = props;
 
 
 
@@ -12,14 +17,14 @@ const Frame13: React.FC = () => {
         <StyledDiv  margin='5% auto 0 auto'
         width='min( calc(683px + (100vw - 683px)*0.4 ), 100vw )'
         height='auto'
-        backgroundColor='transparent'
-        enableShadow={false}
+        backgroundColor='#f5f5f5'
+        enableShadow={true}
         borderRadius={4}>
             <FlexBox    flexDirection='column'
                 alignItems='center'
                 justifyContent='space-around'>
                 <StyledDiv flexGrow={1} height='3em' margin='20px 0 0 20px ' alignSelf='flex-start'>
-                    <StyledButton width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
+                    <StyledButton onClick={()=>{closeFrame13()}} width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
                         戻る
                     </StyledButton>
                 </StyledDiv>
@@ -46,7 +51,7 @@ const Frame13: React.FC = () => {
                                     minWidth='100%'
                                     minHeight='10cm'/>
                 </StyledDiv>
-                <StyledDiv flexGrow={1} margin='0 30px 0 0 ' alignSelf='flex-end'>
+                <StyledDiv flexGrow={1} margin='0 30px 20px 0 ' alignSelf='flex-end'>
                     <StyledButton height='1.5em' width='5em' fontSize='2em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='4px'>
                         保存
                     </StyledButton>
