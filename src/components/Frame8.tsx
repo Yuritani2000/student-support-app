@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AbsoluteBox, FlexBox, HoverElement, RelativeBox, StyledButton, StyledDiv, StyledText } from './StyledComponents';
+import Frame9 from './Frame9';
 
 const Frame8:React.FC = () => {
+    const [ isOpeningFrame9, setIsOpeningFrame9 ] = useState(false);
+
+    const openFrame9 = () => {
+        setIsOpeningFrame9(true);
+    }
+    
+    const closeFrame9 = () => {
+        setIsOpeningFrame9(false);
+    }
 
     const mockSubjects = ['現代文', '古文', '漢文', '物理', '化学', '生物', '数学IA', '数学IIB', '数学III', '地理A', '地理B', '世界史A', '世界史B', '日本史A', '日本史B', '現代社会', '倫理', '家庭', '体育', '保健', '情報科学', 'アルゴリズムとデータ構造', 'プロジェクト学習'];
 
@@ -29,7 +39,7 @@ const Frame8:React.FC = () => {
                             </FlexBox>
                         </StyledDiv>
                         <StyledDiv flexGrow={1} height='4em' margin='0 20px 20px 0 ' alignSelf='flex-end'>
-                            <StyledButton height='1.5em' width='1.5em' fontSize='3em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='50%'>
+                            <StyledButton onClick={()=>{ openFrame9() }} height='1.5em' width='1.5em' fontSize='3em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='50%'>
                                 +
                             </StyledButton>
                         </StyledDiv>
@@ -54,6 +64,13 @@ const Frame8:React.FC = () => {
                         </StyledDiv>
                     </FlexBox>
             </StyledDiv>
+            <AbsoluteBox top='0%' left='0%'>
+                <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' noDisplay={!isOpeningFrame9}>
+                    <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
+                        <Frame9 closeFrame9={closeFrame9}/>
+                    </AbsoluteBox>
+                </StyledDiv>
+            </AbsoluteBox>
         </StyledDiv>
     );
 }

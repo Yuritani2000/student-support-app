@@ -1,7 +1,16 @@
 import React from 'react';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput } from './StyledComponents';
+import firebase, { database } from '../firebase';
 
-const Frame9: React.FC = () => {
+type Frame9Props = {
+    closeFrame9: () => void;
+}
+
+const Frame9: React.FC<Frame9Props> = (props) => {
+    const { closeFrame9 } = props;
+
+    const 
+
     return (
         <StyledDiv  margin='10% auto 0 auto'
                     width='min( calc(683px + (100vw - 683px)*0.1 ), 100vw )'
@@ -13,7 +22,7 @@ const Frame9: React.FC = () => {
                         alignItems='center'
                         justifyContent='space-around'>
                 <StyledDiv flexGrow={1} height='3em' margin='20px 0 0 20px ' alignSelf='flex-start'>
-                    <StyledButton  width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
+                    <StyledButton  onClick={()=> {closeFrame9()}} width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
                         戻る
                     </StyledButton>
                 </StyledDiv>
