@@ -32,9 +32,8 @@ const Frame15: React.FC<Frame15Props> = (props) => {
     /* モック用の科目一覧。時間割機能実装後に本物と置き換える必要あり。 */
     const mockSubjects: OneSubjectDataType[] = [
         {
-            key: "dummyKey0",
+            id: "dummyKey0",
             content: {
-                user_id: "dummyUser",
                 name: "国語",
                 memo: "hogehoge",
                 create_at: "2017-05-05 00:00:00.000+0000",
@@ -42,9 +41,8 @@ const Frame15: React.FC<Frame15Props> = (props) => {
             }
         },
         {
-            key: "dummyKey1",
+            id: "dummyKey1",
             content: {
-                user_id: "dummyUser",
                 name: "数学",
                 memo: "hogehoge",
                 create_at: "2017-05-05 00:00:00.000+0000",
@@ -52,9 +50,8 @@ const Frame15: React.FC<Frame15Props> = (props) => {
             }
         },
         {
-            key: "dummyKey2",
+            id: "dummyKey2",
             content: {
-                user_id: "dummyUser",
                 name: "社会",
                 memo: "hogehoge",
                 create_at: "2017-05-05 00:00:00.000+0000",
@@ -62,9 +59,8 @@ const Frame15: React.FC<Frame15Props> = (props) => {
             }
         },
         {
-            key: "dummyKey3",
+            id: "dummyKey3",
             content: {
-                user_id: "dummyUser",
                 name: "理科",
                 memo: "hogehoge",
                 create_at: "2017-05-05 00:00:00.000+0000",
@@ -72,9 +68,8 @@ const Frame15: React.FC<Frame15Props> = (props) => {
             }
         },
         {
-            key: "dummyKey4",
+            id: "dummyKey4",
             content: {
-                user_id: "dummyUser",
                 name: "英語",
                 memo: "hogehoge",
                 create_at: "2017-05-05 00:00:00.000+0000",
@@ -219,7 +214,7 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                                 <option value='default'>科目を選択</option>
                                 {
                                     mockSubjects.map((item) => {
-                                        return <option value={item.key}>{item.content.name}</option>
+                                        return <option value={item.id}>{item.content.name}</option>
                                     })
                                 }
                             </StyledSelect>
