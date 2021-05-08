@@ -1,5 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import firebase, { database } from '../firebase';
+import { CalendarType } from 'react-calendar';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2 } from './StyledComponents';
+import { CalendarMemoDataType } from '../DataTypes/CalendarMemoTypes';
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
@@ -10,11 +13,36 @@ type Frame16Props = {
 
 const Frame16: React.FC<Frame16Props> = (props) => {
 
-    const year = 2000;
-    const month = 0;
-    const date = 0; 
+    const[calendarMemo, setCalendarMemo] = useState([] as CalendarMemoDataType[]);
 
     const { closeFrame16, stringDay } = props;
+
+    const calendarRef = database.ref('calendar');
+
+    useEffect(()=>{
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        const userId = '1';//user.uid;
+        if(!userId) return;
+        
+        const listRef = calendarRef.child(userId);
+        if(!listRef) return;
+
+        listRef.on('value', (snapshot) => {
+            const calendarMemo = snapshot.val();
+            if(calendarMemo === null)return;
+
+            const entries = Object.entries(calendarMemo);
+            const gainedData = entries.map((data)=>{
+                const [ id, memo ] = data;
+                return { id: id, content: memo}
+            })
+
+            const gainedMemos: CalendarMemoDataType[] = gainedData as CalendarMemoDataType[];
+            
+            setCalendarMemo(gainedMemos);
+        })
+    }, []);
 
     return (
         <StyledDiv  margin='0% auto 0 auto'
@@ -46,11 +74,11 @@ const Frame16: React.FC<Frame16Props> = (props) => {
                 <StyledDiv flexGrow={20} width='95%' margin='0 0 30px 0' >
                     <FlexBox flexDirection='column' >
                         {
-                            mockMemo.map((item) => {
+                            calendarMemo.map((item) => {
                                 return  <StyledDiv width='100%' enableShadow={true} margin='20px 20px 0 0' isClickable={true} backgroundColor='#fefefe' borderRadius={4}>
                                             <FlexBox justifyContent='space-around' flexDirection='row' alignItems='center' height='4.5em' >
                                                 <StyledText size='1.7em' isClickable={true} width='95%' >
-                                                    {item}
+                                                  {item.content.title}
                                                 </StyledText>
                                                 <StyledButton width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
                                                     削除
