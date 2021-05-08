@@ -29,6 +29,7 @@ const Frame4: React.FC = () => {
     const openFrame13 = (selectedMemo?:string) =>{
         setIsOpeningFrame13(true);
         if(!selectedMemo){
+            setSelectedMemo('');
             return;
         }
         setSelectedMemo(selectedMemo);
@@ -58,7 +59,6 @@ const Frame4: React.FC = () => {
         // あまり良くない方法だが変更がDBに反映されたことを前提として表示を消去する。
         if(memos.length === 1) setMemos([]);
     }
-
 
     useEffect(()=>{
         // ユーザーの情報を取得。それぞれnullチェックを行う。
@@ -103,7 +103,6 @@ const Frame4: React.FC = () => {
                             <HamburgerMenuButton isOpening={isOpeningFrame7}/>
                         </StyledDiv>
                     </AbsoluteBox>
-
                     <FlexBox    flexDirection='column'
                         alignItems='center'
                         justifyContent='space-around'>
@@ -123,17 +122,16 @@ const Frame4: React.FC = () => {
                             <FlexBox flexDirection='column' >
                                 {
                                     memos.map((item) => {
-                                        return  <StyledDiv onClick={()=>{ openFrame13(item.id)}} width='100%' enableShadow={true} margin='20px 20px 0 0' isClickable={true} backgroundColor='#fefefe' borderRadius={4}>
+                                        return  <StyledDiv width='100%' enableShadow={true} margin='20px 20px 0 0' isClickable={true} backgroundColor='#fefefe' borderRadius={4}>
                                                     <FlexBox justifyContent='space-around' flexDirection='row' alignItems='center' height='4.5em' >
-                                                        <StyledText size='1.7em' isClickable={true} width='95%' >
+                                                        <StyledText onClick={()=>{ openFrame13(item.id)}} size='1.7em' isClickable={true} width='95%' >
                                                             {item.content.title}
                                                         </StyledText>
-                                                        <StyledButton width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
+                                                        <StyledButton onClick={()=>{ deleteMemo(item.id) }}width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
                                                             削除
                                                         </StyledButton>
                                                     </FlexBox>
                                                 </StyledDiv>
-                                                
                                     })
                                 }
                             </FlexBox>
@@ -143,12 +141,11 @@ const Frame4: React.FC = () => {
                         <AbsoluteBox top='0%' left='0%'>
                             <StyledDiv width='100vw' height='100vh' backgroundColor='rgb(245, 245, 245)'>
                                 <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
-                                    <Frame13 closeFrame13={closeFrame13} selectedMemo={selectedMemo}/>
+                                    <Frame13 closeFrame13={closeFrame13} selectedMemo={selectedMemo} isOpeningFrame13={isOpeningFrame13}/>
                                 </AbsoluteBox>
                             </StyledDiv>
                         </AbsoluteBox>
                     </StyledDiv>
-
                     <StyledDiv noDisplay={!isOpeningFrame7} >
                        <FixedBox>
                          <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
