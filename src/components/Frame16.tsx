@@ -3,14 +3,21 @@ import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
-const Frame16: React.FC = () => {
+type Frame16Props = {
+    closeFrame16: () => void;
+    stringDay: string;      
+}
+
+const Frame16: React.FC<Frame16Props> = (props) => {
 
     const year = 2000;
     const month = 0;
     const date = 0; 
 
+    const { closeFrame16, stringDay } = props;
+
     return (
-        <StyledDiv  margin='2% auto 0 auto'
+        <StyledDiv  margin='0% auto 0 auto'
         width='min( calc(683px + (100vw - 683px)*0.4 ), 100vw )'
         height='auto'
         backgroundColor='transparent'
@@ -20,14 +27,14 @@ const Frame16: React.FC = () => {
                 alignItems='center'
                 justifyContent='space-around'>
                 <StyledDiv flexGrow={1} height='3em' margin='20px 0 0 20px ' alignSelf='flex-start'>
-                    <StyledButton width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
+                    <StyledButton onClick={()=>closeFrame16()} width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
                         戻る
                     </StyledButton>
                 </StyledDiv>
                 <StyledDiv flexGrow={2} margin='30px 0 0 0 '>
                     <FlexBox alignItems='center'>
                         <StyledText size='2em' fontWeight='normal'>
-                            {year} / {month} / {date}
+                            {stringDay}                            
                         </StyledText>
                     </FlexBox>
                 </StyledDiv>
