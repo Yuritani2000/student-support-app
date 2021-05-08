@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledSelect } from './StyledComponents';
-import firebase, { taskAndTodoRef } from '../firebase';
+import firebase, { taskAndTodoRef, database } from '../firebase';
 import { TaskAndTodoType } from '../DataTypes/TaskAndTodoDataTypes';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
 
@@ -25,58 +25,12 @@ const Frame15: React.FC<Frame15Props> = (props) => {
     const [ deadline, setDeadline ] = useState('');         // 現在入力されている締め切りを保持する
     const [ isSubmittable, setIsSubmittable ] = useState(false);    // 入力状態が条件を満たし、追加可能な状態かどうかを保持する
     const [ isWarning, setIsWarning ] = useState(false);    // 画面に警告（各入力欄を赤枠で示す）を表示するかを保持する
+    const [ subjects, setSubjects ] = useState([] as OneSubjectDataType[]);
+
+    const subjectRef = database.ref('subject');
 
     /* 渡ってきたpropsを各変数に展開する。 */
     const { closeFrame15 } = props;
-
-    /* モック用の科目一覧。時間割機能実装後に本物と置き換える必要あり。 */
-    const mockSubjects: OneSubjectDataType[] = [
-        {
-            id: "dummyKey0",
-            content: {
-                name: "国語",
-                memo: "hogehoge",
-                create_at: "2017-05-05 00:00:00.000+0000",
-                update_at: "2017-05-05 00:00:00.000+0000",
-            }
-        },
-        {
-            id: "dummyKey1",
-            content: {
-                name: "数学",
-                memo: "hogehoge",
-                create_at: "2017-05-05 00:00:00.000+0000",
-                update_at: "2017-05-05 00:00:00.000+0000",
-            }
-        },
-        {
-            id: "dummyKey2",
-            content: {
-                name: "社会",
-                memo: "hogehoge",
-                create_at: "2017-05-05 00:00:00.000+0000",
-                update_at: "2017-05-05 00:00:00.000+0000",
-            }
-        },
-        {
-            id: "dummyKey3",
-            content: {
-                name: "理科",
-                memo: "hogehoge",
-                create_at: "2017-05-05 00:00:00.000+0000",
-                update_at: "2017-05-05 00:00:00.000+0000",
-            }
-        },
-        {
-            id: "dummyKey4",
-            content: {
-                name: "英語",
-                memo: "hogehoge",
-                create_at: "2017-05-05 00:00:00.000+0000",
-                update_at: "2017-05-05 00:00:00.000+0000",
-            }
-        },
-    ]
 
     /* カテゴリを変更するselectの入力値が変更されたときに呼ばれる */
     const onChangeCategory = (value: string) => {
@@ -160,6 +114,26 @@ const Frame15: React.FC<Frame15Props> = (props) => {
     /* 今回は、第2引数に指定したstateが変化するたびに呼ばれる。 */
     useEffect(checkSubmittable, [category, subjectId, taskName, deadline]);
 
+    useEffect(()=>{
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        const userId = user.uid;
+        if(!userId) return;
+        const subjectListRef = subjectRef.child(userId);
+        if(!subjectListRef) return;
+        subjectListRef.on('value', (snapshot) => {
+            const subjects = snapshot.val();
+            if(subjects === null) return;
+            const entries = Object.entries(subjects);
+            const gainedData = entries.map((data) => {
+                const [ id, content ] = data;
+                return { id: id, content: content }
+            })
+            const gainedSubjects: OneSubjectDataType[] = gainedData as OneSubjectDataType[];
+            setSubjects(gainedSubjects);
+        })
+    }, []);
+
     /* 実際に画面に描写するJSXを記述する */
     /* StyledComponentsにpropsを渡すことで、柔軟にデザインを変更することができる。 */
     return (
@@ -213,8 +187,8 @@ const Frame15: React.FC<Frame15Props> = (props) => {
                                             borderColor={(isWarning && subjectId ==='default') ? '#ff0000' : ''}>
                                 <option value='default'>科目を選択</option>
                                 {
-                                    mockSubjects.map((item) => {
-                                        return <option value={item.id}>{item.content.name}</option>
+                                    subjects.map((item, index) => {
+                                        return <option key={index} value={item.id}>{item.content.name}</option>
                                     })
                                 }
                             </StyledSelect>
