@@ -13,7 +13,7 @@ type Frame13Props = {
 
 const Frame13: React.FC<Frame13Props> = (props) => {
 
-    const { closeFrame13, selectedMemo } = props;
+    const { closeFrame13, selectedMemo='' } = props;
     const memoRef = database.ref('memo');
     const [ title, setTitle ] = useState('');
     const [ contents, setContents ] = useState('');
@@ -30,6 +30,12 @@ const Frame13: React.FC<Frame13Props> = (props) => {
 
   //  useEffect(checkSubmittable, [category, subjectId, taskName, deadline]);
 
+  const onSubmit = () => {
+        push();
+        closeFrame13();
+        setTitle('');
+        setContents('');
+    }
 
     const push = () => {
         const now = new Date(); // タイムスタンプ用のdateオブジェクト
@@ -51,12 +57,11 @@ const Frame13: React.FC<Frame13Props> = (props) => {
     }
 
 
-
     return (
         <StyledDiv  margin='5% auto 0 auto'
         width='min( calc(683px + (100vw - 683px)*0.4 ), 100vw )'
         height='auto'
-        backgroundColor='#f5f5f5'
+        backgroundColor='#FFFFFF'
         enableShadow={true}
         borderRadius={4}>
             <FlexBox    flexDirection='column'

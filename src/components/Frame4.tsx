@@ -1,51 +1,43 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import firebase from '../firebase';
-import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect ,AbsoluteBox, FixedBox} from './StyledComponents';
-=======
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
-import firebase, { memoRef } from '../firebase';
-import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect, AbsoluteBox} from './StyledComponents';
->>>>>>> 843143e... [rebase]develop
-=======
 import firebase, { database } from '../firebase';
-import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect, AbsoluteBox,FixedBox} from './StyledComponents';
->>>>>>> 8e8a653... [rebase]develop
+import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect ,AbsoluteBox, FixedBox} from './StyledComponents';
 import { Redirect } from 'react-router-dom';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
+import Frame13 from './Frame13';
+import { MemoDataType } from '../DataTypes/MemoDataTypes';
 
-//const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
+const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
-const Frame10: React.FC = () => {
+const Frame4: React.FC = () => {
 
-<<<<<<< HEAD
     const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
-=======
+    const [isOpeningFrame13, setIsOpeningFrame13] = useState(false);
+    const [ memos, setMemos ] = useState([] as MemoDataType[]);
+    const [ selectedMemo, setSelectedMemo ] = useState('');
+    
     const memoRef = database.ref('memo');
-    const [ isOpeningFrame13, setIsOpeningFrame13 ] = useState(false);  // frame13が開いているかを管理する
-    const [ memos, setMemos ] = useState([] as MemoDataType[]);   // メモのデータが配列になって入っている。この配列データの型定義は別ファイルを参照。   
-    const [ memoId, setMemoId ] = useState(''); 
-    /* frame13を開く関数 */
-    const openFrame13 = (selectedMemo?:string) => {
-        setIsOpeningFrame13(true);
-        if(!selectedMemo){
-            return
-        }
-        setMemoId(selectedMemo);
-    }
->>>>>>> 8e8a653... [rebase]develop
 
     const openFrame7 = () =>{
         setIsOpeningFrame7(true);
     }
-<<<<<<< HEAD
 
     const closeFrame7 = () =>{
         setIsOpeningFrame7(false);
-=======
-    
+    }
+
+    const openFrame13 = (selectedMemo?:string) =>{
+        setIsOpeningFrame13(true);
+        if(!selectedMemo){
+            return;
+        }
+        setSelectedMemo(selectedMemo);
+    }
+
+    const closeFrame13 = () =>{
+        setIsOpeningFrame13(false);
+    }
+
     const deleteMemo = (targetId: string) => {
         // ユーザーのタスクデータへの参照を取得
         const user = firebase.auth().currentUser;
@@ -53,10 +45,10 @@ const Frame10: React.FC = () => {
         const userId = user.uid;
         if(!userId) return;
 
-        // 現在のメモ一覧から、対象のメモを取得
+        // 現在のタスク一覧から、対象のタスクを取得
         const targetMemo = memos.find((item) => item.id === targetId);
         if(!targetMemo) return;
-        // 対象のメモへの参照を取得
+        // 対象のタスクへの参照を取得
         const listRef = memoRef.child(userId);
         const targetRef = listRef.child('/' + targetMemo.id);
         if(!targetRef) return;
@@ -65,8 +57,8 @@ const Frame10: React.FC = () => {
         // 一つしかないデータを削除したときは何故かuseEffectのonが呼ばれない。
         // あまり良くない方法だが変更がDBに反映されたことを前提として表示を消去する。
         if(memos.length === 1) setMemos([]);
->>>>>>> 8e8a653... [rebase]develop
     }
+
 
     useEffect(()=>{
         // ユーザーの情報を取得。それぞれnullチェックを行う。
@@ -131,10 +123,10 @@ const Frame10: React.FC = () => {
                             <FlexBox flexDirection='column' >
                                 {
                                     memos.map((item) => {
-                                        return  <StyledDiv onClick={() =>{openFrame13(item.id)}}width='100%' enableShadow={true} margin='20px 20px 0 0' isClickable={true} backgroundColor='#fefefe' borderRadius={4}>
+                                        return  <StyledDiv onClick={()=>{ openFrame13(item.id)}} width='100%' enableShadow={true} margin='20px 20px 0 0' isClickable={true} backgroundColor='#fefefe' borderRadius={4}>
                                                     <FlexBox justifyContent='space-around' flexDirection='row' alignItems='center' height='4.5em' >
                                                         <StyledText size='1.7em' isClickable={true} width='95%' >
-                                                            {item}
+                                                            {item.content.title}
                                                         </StyledText>
                                                         <StyledButton width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
                                                             削除
@@ -147,35 +139,23 @@ const Frame10: React.FC = () => {
                             </FlexBox>
                         </StyledDiv>
                     </FlexBox>
-<<<<<<< HEAD
+                    <StyledDiv noDisplay={!isOpeningFrame13}> 
+                        <AbsoluteBox top='0%' left='0%'>
+                            <StyledDiv width='100vw' height='100vh' backgroundColor='rgb(245, 245, 245)'>
+                                <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
+                                    <Frame13 closeFrame13={closeFrame13} selectedMemo={selectedMemo}/>
+                                </AbsoluteBox>
+                            </StyledDiv>
+                        </AbsoluteBox>
+                    </StyledDiv>
+
                     <StyledDiv noDisplay={!isOpeningFrame7} >
                        <FixedBox>
                          <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
                            <Frame7 closeFrame7={closeFrame7}/>
                          </StyledDiv>
                        </FixedBox>
-=======
-                    <StyledDiv noDisplay={!isOpeningFrame13}> 
-<<<<<<< HEAD
-                        <AbsoluteBox top='0%' left='0%'>
-                            <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0,0,0,0.2)'>
-                                <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
-                                    <Frame13 closeFrame13={closeFrame13}/>
-                                </AbsoluteBox>
-                            </StyledDiv>
-                        </AbsoluteBox>
->>>>>>> 843143e... [rebase]develop
-=======
-                        <FixedBox top='0%' left='0%'>
-                        <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0,0,0,0.2)'/>
-                    </FixedBox>
->>>>>>> 8e8a653... [rebase]develop
                     </StyledDiv>
-                    <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
-                        <StyledDiv noDisplay={!isOpeningFrame13}>
-                            <Frame13 closeFrame13={closeFrame13} selectedMemo={memoId}/>
-                        </StyledDiv>
-                    </AbsoluteBox>
                 </StyledDiv>
             )
         }else{
@@ -190,4 +170,4 @@ const Frame10: React.FC = () => {
     );
 } 
 
-export default Frame10;
+export default Frame4;
