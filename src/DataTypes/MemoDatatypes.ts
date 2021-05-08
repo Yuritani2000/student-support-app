@@ -4,9 +4,8 @@ export type MemoDataType = {
 }
 
 export type MemoType = {
-    user_id: string;
     title: string;
-    content: string;
-    create__at: string;
+    contents: string;
+    create_at: string;
     update_at: string;
 }

@@ -32,5 +32,5 @@ export const database = firebase.database();
 // それぞれのpathへの参照をここに記述すると良き。
 
 export const taskAndTodoRef = database.ref('task_and_todo');
-export const memoRef = database.ref('memo');
+
 export default firebase;

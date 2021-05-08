@@ -1,15 +1,54 @@
-import React from 'react';
-import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledTextArea } from './StyledComponents';
+import React, { useState, useEffect } from 'react';
+//import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledTextArea } from './StyledComponents';
+import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledTextArea, HoverElement2, StyledSelect, AbsoluteBox,FixedBox} from './StyledComponents';
+import firebase, { database } from '../firebase';
+import { MemoType } from '../DataTypes/MemoDataTypes';
 
 
 
 type Frame13Props = {
     closeFrame13: () => void;   // frame15を閉じるための関数。
-    //viewmemo: ()=> 1; //選択肢したメモのidを渡す変数
+    selectedMemo?: string; //選択肢したメモのidを渡す変数
 }
 
 const Frame13: React.FC<Frame13Props> = (props) => {
-    const { closeFrame13 } = props;
+
+    const { closeFrame13, selectedMemo } = props;
+    const memoRef = database.ref('memo');
+    const [ title, setTitle ] = useState('');
+    const [ contents, setContents ] = useState('');
+
+
+    const onChangeTitle = (value: string) => {
+        setTitle(value);
+    }
+
+    /* タスク内容の入力値が変更されたときに呼ばれる */
+    const onChangeContents = (value: string) => {
+        setContents(value);
+    }
+
+  //  useEffect(checkSubmittable, [category, subjectId, taskName, deadline]);
+
+
+    const push = () => {
+        const now = new Date(); // タイムスタンプ用のdateオブジェクト
+        const currentTimeStamp = now.getTime(); // 1970年からの現在の時刻を、ミリ秒単位で取得する。
+        const user = firebase.auth().currentUser;   // 現在ログインしているユーザーを取得する。
+        if(!user){/* nullチェック */ return; }
+        const userId = user.uid;// ユーザーIDの取得
+        if(!userId){/* nullチェック */ return; }
+        console.log('post todo as: ' + userId);
+        const listRef = memoRef.child(userId);
+        const newObject: MemoType = {
+            title: title,
+            contents: contents,
+            create_at: now.toString(), 
+            update_at:  now.toString(),
+        }
+        if(!listRef) return;
+        listRef.push(newObject);
+    }
 
 
 
@@ -52,7 +91,7 @@ const Frame13: React.FC<Frame13Props> = (props) => {
                                     minHeight='10cm'/>
                 </StyledDiv>
                 <StyledDiv flexGrow={1} margin='0 30px 20px 0 ' alignSelf='flex-end'>
-                    <StyledButton height='1.5em' width='5em' fontSize='2em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='4px'>
+                    <StyledButton onClick={() =>{}} height='1.5em' width='5em' fontSize='2em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='4px'>
                         保存
                     </StyledButton>
                 </StyledDiv>
