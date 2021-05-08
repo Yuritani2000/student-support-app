@@ -339,3 +339,22 @@ export const StyledSelect = styled.select<StyledSelectProps>((props)=> `
   font-size: ${ props.fontSize ? props.fontSize : '1em'};
   border-color: ${props.borderColor ? props.borderColor : '#000000'};
 `);
+
+type FixedBoxProps = {
+  top?: string;           // 要素の上にどれくらいの空間を開けるか
+  left?: string;          // 要素の左にどれくらいの空間を開けるか
+  translateX?: number;    // 要素幅の何%位置をずらすか
+  translateY?: number;    // 要素高さの何%位置をずらすか
+  width?: string;         // 幅
+  height?: string;        // 高さ
+}
+
+/* 要素を絶対一で指定したい時に使う。 */
+export const FixedBox = styled.div<FixedBoxProps>((props)=> `
+  width: ${props.width ? props.width : 'auto'};
+  height: ${props.height ? props.height  : 'auto'};
+  position: fixed;
+  top: ${props.top ? props.top : '0%'};
+  left: ${props.left ? props.left : '0%'};
+  transform: translate( ${props.translateX ? props.translateX : 0 }%, ${props.translateY ? props.translateY : 0 }% );
+`);
