@@ -10,6 +10,10 @@ const mockMemo = ['アルゴの課題について', '買い物リスト', 'チ�
 
 const Frame3: React.FC = () => {
 
+    const onClickDay = (date: Date) => {
+        alert('クリックされた日: ' + date.getFullYear() + ' / ' + date.getMonth() + ' / ' + date.getDate())
+    }
+
 const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
 
     const openFrame7 = () =>{
@@ -63,7 +67,7 @@ const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
                         </StyledDiv>
                         <StyledDiv flexGrow={1} margin='0 0 0 0 '>
                             <FlexBox alignItems='center'>
-                                <Calendar/>
+                                <Calendar onClickDay={ ( date: Date )=> {onClickDay(date)}}/>
                             </FlexBox>
                         </StyledDiv>
                     </FlexBox>
