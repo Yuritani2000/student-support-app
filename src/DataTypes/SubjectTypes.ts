@@ -6,8 +6,8 @@ export type OneSubjectDataType = {
 }
 
 export type OneSubjectType = {
-    title: string;
-    content: string;
+    name: string;
+    memo: string;
     create_at: string;
     update_at: string;
 }
