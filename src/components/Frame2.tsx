@@ -12,8 +12,8 @@ const Frame2: React.FC = () => {
 
     const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
     const [isOpeningFrame8, setIsOpeningFrame8] = useState(false);
-    const [ clickedRow, setClickedRow ] = useState(0);
-    const [ clickedColumn, setClickedColumn ] = useState(0);
+    const [ clickedDay, setClickedDay ] = useState(0);
+    const [ clickedPeriod, setClickedPeriod ] = useState(0);
 
     const openFrame7 = () =>{
         setIsOpeningFrame7(true);
@@ -23,8 +23,16 @@ const Frame2: React.FC = () => {
         setIsOpeningFrame7(false);
     }
 
-    const handleClickMatrix = (day: number, period: number) => {
+    const openFrame8 = (day: number, period: number) => {
         console.log('(' + day +  ', ' + period + ') clicked');
+        if(day === 0 || period === 0) return;
+        setClickedDay(day)
+        setClickedPeriod(period);
+        setIsOpeningFrame8(true);
+    }
+
+    const closeFrame8 = () => {
+        setIsOpeningFrame8(false);
     }
 
     const days = ['', '月', '火', '水', '木', '金', '土'];
@@ -54,7 +62,7 @@ const Frame2: React.FC = () => {
                                 array.map((innerArray, index)=>
                                     {
                                         return <FlexBox width='auto' flexDirection='column'>{innerArray.map( (value, innerIndex) => {
-                                            return  <StyledDiv  onClick={()=>handleClickMatrix(index, innerIndex)}
+                                            return  <StyledDiv  onClick={()=>openFrame8(index, innerIndex)}
                                                                     width={(index===0) ? '180px' : '120px'}
                                                                     height='80px'
                                                                     isClickable={(innerIndex === 0) ? false : true}
@@ -102,6 +110,17 @@ const Frame2: React.FC = () => {
                            <Frame7 closeFrame7={closeFrame7}/>
                          </StyledDiv>
                        </FixedBox>
+                    </StyledDiv>
+
+                    <StyledDiv noDisplay={!isOpeningFrame8}>
+                        <FixedBox>
+                            <StyledDiv width='100vw' height='100vh' backgroundColor='#f5f5f5'/>
+                        </FixedBox>
+                    </StyledDiv>
+                    <StyledDiv noDisplay={!isOpeningFrame8}>
+                        <AbsoluteBox top='5%' left='50%' translateX={-50} translateY={0}>
+                            <Frame8 clickedDay={clickedDay} clickedPeriod={clickedPeriod} closeFrame8={closeFrame8}/>
+                        </AbsoluteBox>
                     </StyledDiv>
 
                 </StyledDiv>
