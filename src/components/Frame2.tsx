@@ -4,12 +4,16 @@ import firebase from '../firebase';
 import { Redirect } from 'react-router-dom';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
+import Frame8 from './Frame8';
 
 const Frame2: React.FC = () => {
         
     const array = [ [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
     const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
+    const [isOpeningFrame8, setIsOpeningFrame8] = useState(false);
+    const [ clickedRow, setClickedRow ] = useState(0);
+    const [ clickedColumn, setClickedColumn ] = useState(0);
 
     const openFrame7 = () =>{
         setIsOpeningFrame7(true);

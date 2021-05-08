@@ -4,11 +4,16 @@ import Frame9 from './Frame9';
 import firebase, { database } from '../firebase';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
 
+type Frame8Props = {
+    clickedRow: number;
+    clickedColumn: number;
+}
 
-
-const Frame8:React.FC = () => {
+const Frame8:React.FC<Frame8Props> = (props) => {
     const [ isOpeningFrame9, setIsOpeningFrame9 ] = useState(false);
     const [ subjectList, setSubjectList ] = useState([] as OneSubjectDataType[] );
+
+    const { clickedRow, clickedColumn } = props;
 
     const subjectRef = database.ref('subject');
 
