@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import firebase, { taskAndTodoRef } from '../firebase';
-import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect, AbsoluteBox} from './StyledComponents';
+import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement2, StyledSelect, AbsoluteBox, FixedBox} from './StyledComponents';
 import CheckButton from './CheckButton';
 import { Redirect } from 'react-router-dom';
 import Frame15 from './Frame15';
 import { TaskAndTodoDataType } from '../DataTypes/TaskAndTodoDataTypes';
 import { isTemplateExpression } from 'typescript';
+import HamburgerMenuButton from './HamburgerMenuButton';
+import Frame7 from './Frame7';
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
@@ -14,6 +16,16 @@ const Frame10: React.FC = () => {
     const [ isOpeningFrame15, setIsOpeningFrame15 ] = useState(false);  // frame15が開いているかを管理する
     const [ tasks, setTasks ] = useState([] as TaskAndTodoDataType[]);   // タスクのデータが配列になって入っている。この配列データの型定義は別ファイルを参照。   
     const [ filter, setFilter ] = useState('all');  // 表示するタスクの絞り込み条件を記述する。
+
+    const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
+
+    const openFrame7 = () =>{
+        setIsOpeningFrame7(true);
+    }
+
+    const closeFrame7 = () =>{
+        setIsOpeningFrame7(false);
+    }
 
     /* frame15を開く関数 */
     const openFrame15 = () => {
@@ -107,6 +119,13 @@ const Frame10: React.FC = () => {
                 backgroundColor='transparent'
                 enableShadow={false}
                 borderRadius={4}>
+                    
+                    <AbsoluteBox>
+                        <StyledDiv onClick={()=>openFrame7()} noDisplay={isOpeningFrame7}>
+                            <HamburgerMenuButton isOpening={isOpeningFrame7}/>
+                        </StyledDiv>
+                    </AbsoluteBox>
+                    
                     <FlexBox    flexDirection='column'
                         alignItems='center'
                         justifyContent='space-around'>
@@ -176,6 +195,15 @@ const Frame10: React.FC = () => {
                             </StyledDiv>
                         </AbsoluteBox>
                     </StyledDiv>
+
+                    <StyledDiv noDisplay={!isOpeningFrame7} >
+                       <FixedBox>
+                         <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
+                           <Frame7 closeFrame7={closeFrame7}/>
+                         </StyledDiv>
+                       </FixedBox>
+                    </StyledDiv>
+
                 </StyledDiv>
             )
         }else{

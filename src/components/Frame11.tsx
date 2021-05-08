@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import firebase from '../firebase';
-import { AbsoluteBox, FlexBox, HoverElement, RelativeBox, StyledButton, StyledDiv, StyledText } from './StyledComponents';
+import { AbsoluteBox, FlexBox, HoverElement, RelativeBox, StyledButton, StyledDiv, StyledText, FixedBox} from './StyledComponents';
 import { Redirect } from 'react-router-dom';
+import HamburgerMenuButton from './HamburgerMenuButton';
+import Frame7 from './Frame7';
 
 const Frame11:React.FC = () => {
 
     const mockSubjects = ['現代文', '古文', '漢文', '物理', '化学', '生物', '数学IA', '数学IIB', '数学III', '地理A', '地理B', '世界史A', '世界史B', '日本史A', '日本史B', '現代社会', '倫理', '家庭', '体育', '保健', '情報科学', 'アルゴリズムとデータ構造', 'プロジェクト学習'];
+
+    const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
+
+    const openFrame7 = () =>{
+        setIsOpeningFrame7(true);
+    }
+
+    const closeFrame7 = () =>{
+        setIsOpeningFrame7(false);
+    }
+
+    const handleClickMatrix = (day: number, period: number) => {
+        console.log('(' + day +  ', ' + period + ') clicked');
+    }
+
 
     const render = () => {
         if(firebase.auth().currentUser) {
             console.log('signed in as: ' + firebase.auth().currentUser?.email);
             return (
                 <StyledDiv margin='5% 0 0 0'>
+
+                    <AbsoluteBox>
+                       <StyledDiv onClick={()=>openFrame7()} noDisplay={isOpeningFrame7}>
+                            <HamburgerMenuButton isOpening={isOpeningFrame7}/>
+                        </StyledDiv>
+                    </AbsoluteBox>
+
                     <StyledDiv  backgroundColor='transparent' 
                                 enableShadow={false}
                                 width='min( calc(683px + (100vw - 683px)*0.5 ), 100vw )'
@@ -50,6 +74,15 @@ const Frame11:React.FC = () => {
                                 </StyledDiv>
                             </FlexBox>
                     </StyledDiv>
+
+                    <StyledDiv noDisplay={!isOpeningFrame7} >
+                       <FixedBox>
+                         <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
+                           <Frame7 closeFrame7={closeFrame7}/>
+                         </StyledDiv>
+                       </FixedBox>
+                    </StyledDiv>
+
                 </StyledDiv>
             )
         }else{

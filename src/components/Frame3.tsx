@@ -1,12 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import firebase from '../firebase';
-import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledTextArea } from './StyledComponents';
+import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, AbsoluteBox, FixedBox, StyledTextArea } from './StyledComponents';
 import Calendar from 'react-calendar';
 import { Redirect } from 'react-router-dom';
+import HamburgerMenuButton from './HamburgerMenuButton';
+import Frame7 from './Frame7';
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
 const Frame3: React.FC = () => {
+
+const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
+
+    const openFrame7 = () =>{
+        setIsOpeningFrame7(true);
+    }
+
+    const closeFrame7 = () =>{
+        setIsOpeningFrame7(false);
+    }
 
     const render = () => {
         if(firebase.auth().currentUser){
@@ -18,6 +30,13 @@ const Frame3: React.FC = () => {
                 backgroundColor='transparent'
                 enableShadow={false}
                 borderRadius={4}>
+
+                    <AbsoluteBox>
+                        <StyledDiv onClick={()=>openFrame7()} noDisplay={isOpeningFrame7}>
+                            <HamburgerMenuButton isOpening={isOpeningFrame7}/>
+                        </StyledDiv>
+                    </AbsoluteBox>
+
                     <FlexBox    flexDirection='column'
                         alignItems='center'
                         justifyContent='space-around'>
@@ -48,6 +67,13 @@ const Frame3: React.FC = () => {
                             </FlexBox>
                         </StyledDiv>
                     </FlexBox>
+                    <StyledDiv noDisplay={!isOpeningFrame7} >
+                       <FixedBox>
+                       <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
+                       <Frame7 closeFrame7={closeFrame7}/>
+                       </StyledDiv>
+                       </FixedBox>
+                    </StyledDiv>
                 </StyledDiv>
             );
         }else{

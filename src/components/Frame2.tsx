@@ -1,11 +1,23 @@
-import React from 'react';
-import { Parent, StyledDiv, FlexBox, StyledText, StyledInput, HoverElement, StyledButton, RelativeBox, AbsoluteBox} from './StyledComponents';
+import React, { useState } from 'react';
+import { Parent, StyledDiv, FlexBox, StyledText, StyledInput, HoverElement, StyledButton, RelativeBox, AbsoluteBox, FixedBox} from './StyledComponents';
 import firebase from '../firebase';
 import { Redirect } from 'react-router-dom';
+import HamburgerMenuButton from './HamburgerMenuButton';
+import Frame7 from './Frame7';
 
 const Frame2: React.FC = () => {
         
     const array = [ [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+    const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
+
+    const openFrame7 = () =>{
+        setIsOpeningFrame7(true);
+    }
+
+    const closeFrame7 = () =>{
+        setIsOpeningFrame7(false);
+    }
 
     const handleClickMatrix = (day: number, period: number) => {
         console.log('(' + day +  ', ' + period + ') clicked');
@@ -18,8 +30,16 @@ const Frame2: React.FC = () => {
             console.log('signed in as: ' + firebase.auth().currentUser?.email + '(ser ID: ' + firebase.auth().currentUser?.uid +  ')');
             return (
                 <StyledDiv margin='5% auto 0 auto'>
+                   
+                    <AbsoluteBox>
+                        <StyledDiv onClick={()=>openFrame7()} noDisplay={isOpeningFrame7}>
+                            <HamburgerMenuButton isOpening={isOpeningFrame7}/>
+                        </StyledDiv>
+                    </AbsoluteBox>
+
                     <StyledDiv width='900px' height='800px' backgroundColor='transparent' margin='auto' enableShadow={false}>
                         <FlexBox flexDirection='column' alignItems='center' justifyContent='space-between'>
+                                
                             <StyledDiv margin='auto' height='80px'>
                                 <StyledText size='2em' fontWeight='normal'>
                                     時間割
@@ -71,6 +91,15 @@ const Frame2: React.FC = () => {
                             </FlexBox>
                         </FlexBox>
                     </StyledDiv>
+
+                    <StyledDiv noDisplay={!isOpeningFrame7} >
+                       <FixedBox>
+                         <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
+                           <Frame7 closeFrame7={closeFrame7}/>
+                         </StyledDiv>
+                       </FixedBox>
+                    </StyledDiv>
+
                 </StyledDiv>
             )
         }else{
