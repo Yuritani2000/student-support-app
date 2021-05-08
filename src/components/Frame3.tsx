@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
 import Frame16 from './Frame16';
+import 'react-calendar/dist/Calendar.css';
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
@@ -24,10 +25,10 @@ const Frame3: React.FC = () => {
     }
 
     const onClickDay = (date: Date) => {        
-        setSendDate(date.getFullYear() + ' / ' + date.getMonth() + ' / ' + date.getDate())
+        setSendDate(date.getFullYear() + ' / ' + (date.getMonth() + 1 )+ ' / ' + date.getDate())
     }
 
-const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
+    const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
 
     const openFrame7 = () =>{
         setIsOpeningFrame7(true);
@@ -57,30 +58,17 @@ const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
                     <FlexBox flexDirection='column'
                         alignItems='center'
                         justifyContent='space-around'>
-                        <StyledDiv flexGrow={1} margin='30px 0 0 0 '>
+                        <StyledDiv flexGrow={1} margin='30px 0 30px 0 '>
                             <FlexBox alignItems='center'>
                                 <StyledText size='2em' fontWeight='normal'>
                                     カレンダー
                                 </StyledText>
                             </FlexBox>
                         </StyledDiv>
-                        <StyledDiv flexGrow={1} margin='0 0 0 0 '>
+
+                        <StyledDiv flexGrow={1} margin='0 0 30px 0 '>
                             <FlexBox alignItems='center'>
-                                <StyledText size='1.8em' fontWeight='normal'>
-                                    {new Date().getFullYear()}
-                                </StyledText>
-                            </FlexBox>
-                        </StyledDiv>
-                        <StyledDiv flexGrow={1} margin='0 0 0 0 '>
-                            <FlexBox alignItems='center'>
-                                <StyledText size='1.8em' fontWeight='normal'>
-                                    {new Date().getMonth()+1}月
-                                </StyledText>
-                            </FlexBox>
-                        </StyledDiv>
-                        <StyledDiv flexGrow={1} margin='0 0 0 0 '>
-                            <FlexBox alignItems='center'>
-                                <Calendar onClickDay={ ( date: Date )=> {onClickDay(date);openFrame16()}}/>
+                                <Calendar onClickDay={ (date: Date)=> {onClickDay(date);openFrame16()}} />
                             </FlexBox>
                         </StyledDiv>
                     </FlexBox>
@@ -94,7 +82,7 @@ const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
                     
                     <StyledDiv noDisplay={!isOpeningFrame16}> 
                         <AbsoluteBox>
-                          <StyledDiv width='100vw' height='100vh' backgroundColor='#F5F5F5' >
+                          <StyledDiv width='100vw' backgroundColor='#F5F5F5' >
                             <Frame16 closeFrame16={closeFrame16} stringDay={sendDate} />
                           </StyledDiv>
                         </AbsoluteBox>
