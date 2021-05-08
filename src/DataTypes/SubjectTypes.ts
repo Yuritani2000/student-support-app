@@ -1,7 +1,7 @@
 
 
 export type OneSubjectDataType = {
-    key: string;
+    id: string;
     content: OneSubjectType;
 }
 
