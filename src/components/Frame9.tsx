@@ -38,6 +38,10 @@ const Frame9: React.FC<Frame9Props> = (props) => {
             update_at: currentTimeStamp
         }
         subjectListRef.push(newSubject);
+        setIsWarning(false);
+        setNewSubjectName('');
+        setIsSubmittable(false);
+        closeFrame9();
     }
 
     const CheckIsSubmittable = () => {
@@ -63,7 +67,7 @@ const Frame9: React.FC<Frame9Props> = (props) => {
                         alignItems='center'
                         justifyContent='space-around'>
                 <StyledDiv flexGrow={1} height='3em' margin='20px 0 0 20px ' alignSelf='flex-start'>
-                    <StyledButton  onClick={()=> {closeFrame9()}} width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
+                    <StyledButton  onClick={()=> {setIsWarning(false);closeFrame9()}} width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
                         戻る
                     </StyledButton>
                 </StyledDiv>
@@ -75,10 +79,13 @@ const Frame9: React.FC<Frame9Props> = (props) => {
                     </FlexBox>
                 </StyledDiv>
                 <StyledDiv flexGrow={2} width='60%'>
-                    <StyledInput    width='100%'
+                    <StyledInput    value={newSubjectName}
+                                    onChange={(e)=>{onChangeSubjectNameInput(e.target.value)}}
+                                    width='100%'
                                     fontSize='1.5em'
                                     height='2.0em'
-                                    placeholder='科目を入力してください。'/>
+                                    placeholder='科目を入力してください。'
+                                    borderColor={isWarning ? '#ff0000' : ''}/>
                 </StyledDiv>
                 <StyledDiv flexGrow={2} width='50%'>
                     <StyledButton onClick={()=>{ onSubmit() }} width='100%' height='2.0em' backgroundColor={isSubmittable ? '#87cefa' : 'd2d2d2'} fontColor={isSubmittable ? '#000000' : '#fefefe'} fontSize='1.5em' fontWeight='bold' >
