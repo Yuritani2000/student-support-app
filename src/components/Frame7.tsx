@@ -1,14 +1,49 @@
 import React from 'react';
-import { HamburgerMenuBase, FlexBox, RelativeBox, AbsoluteBox, StyledText, HoverElement } from './StyledComponents';
+import { HamburgerMenuBase, FlexBox, RelativeBox, AbsoluteBox, StyledText, HoverElement, StyledDiv } from './StyledComponents';
 import HamburgerMenuButton from './HamburgerMenuButton';
+import { useHistory } from "react-router-dom";
 
-const Frame7: React.FC = () => {
+type Frame7Props = {
+    closeFrame7: () => void;   
+}
+
+const Frame7: React.FC<Frame7Props> = (props) => {
+    
+    const history = useHistory();
+
+    const ToTimetable = () =>{
+        history.push("/frame2")
+    } 
+
+    const ToCalendar = () =>{
+        history.push("/frame3")
+    }
+
+    const ToNote = () =>{
+        history.push("/frame4")
+    }
+
+    const ToTaskList = () =>{
+        history.push("/frame10")
+    }
+
+    const ToSubjectList = () =>{
+        history.push("/frame11")
+    }
+
+    const { closeFrame7 } = props;
+    
     return (
-        <RelativeBox>
-            <HamburgerMenuButton isOpening={true}/>
-            <HamburgerMenuBase isClosed={false}>
-                <RelativeBox>
-                    <AbsoluteBox width='70%' height='50%' top='50%' left='50%' translateX={-50} translateY={-50}>
+             <StyledDiv>
+                   <RelativeBox>
+                        <HamburgerMenuBase isClosed={false}>
+                    <RelativeBox>
+                   
+                    <StyledDiv onClick={()=>closeFrame7()}>
+                        <HamburgerMenuButton isOpening={true}/>
+                    </StyledDiv>
+                   
+                    <AbsoluteBox width='70%' height='50%' top='50%' left='50%' translateX={-50} translateY={-50}> 
                         <FlexBox 
                                     flexDirection='column'
                                     justifyContent='space-around'>
@@ -49,7 +84,7 @@ const Frame7: React.FC = () => {
                 </RelativeBox>
             </HamburgerMenuBase>
         </RelativeBox>
-        
+     </StyledDiv>
     )
 }
 
