@@ -7,6 +7,7 @@ import Frame7 from './Frame7';
 import Frame8 from './Frame8';
 import { time } from 'node:console';
 import { start } from 'node:repl';
+import { isConstructorDeclaration } from 'typescript';
 
 const Frame2: React.FC = () => {
 
@@ -46,18 +47,14 @@ const Frame2: React.FC = () => {
     }
 
     const onChangeTime = (startOrEnd: timeInputTypes, period: number, value: string) => {
-        let newArray = timeOfPeriods;
+        let newArray = [...timeOfPeriods];
         if(startOrEnd === timeInputTypes.Start){
             newArray[period-1] = value + newArray[period-1].slice(5, newArray[period-1].length);
         }else{
             newArray[period-1] = newArray[period-1].slice(0,6) + value;
         }
-        setTimeOfPeriods(newArray);
+        console.log('newArray: ');
         console.log(newArray);
-    }
-
-    // startTimes, endTimesが変わるたびにDBの更新を行い、同時に値を受け取る。
-    useEffect(()=>{
         const user = firebase.auth().currentUser;
         if(!user) return;
         const userId = user.uid;
@@ -66,18 +63,18 @@ const Frame2: React.FC = () => {
         if(!timeListRef) return;
         timeListRef.update(
             {
-                "1": timeOfPeriods[0],
-                "2": timeOfPeriods[1],
-                "3": timeOfPeriods[2],
-                "4": timeOfPeriods[3],
-                "5": timeOfPeriods[4],
-                "6": timeOfPeriods[5],
-                "7": timeOfPeriods[6],
-                "8": timeOfPeriods[7],
+                "1": newArray[0],
+                "2": newArray[1],
+                "3": newArray[2],
+                "4": newArray[3],
+                "5": newArray[4],
+                "6": newArray[5],
+                "7": newArray[6],
+                "8": newArray[7],
                 "update_at": new Date().toString(),
             }
         );
-    }, [timeOfPeriods]);
+    }
 
     useEffect(()=>{
         const user = firebase.auth().currentUser;
@@ -95,8 +92,10 @@ const Frame2: React.FC = () => {
                 return time;
             });
             const gainedTimes: string[] = gainedData as string[];
-            console.log(gainedTimes);
-            setTimeOfPeriods(gainedTimes);
+            const filteredTimes: string[] = gainedTimes.filter((item, index) => index <= 7);
+            console.log('filteredTimes: ');
+            console.log(filteredTimes);
+            setTimeOfPeriods(filteredTimes);
         })
     }, []);
     
