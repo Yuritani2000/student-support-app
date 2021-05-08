@@ -4,9 +4,11 @@ import Frame9 from './Frame9';
 import firebase, { database } from '../firebase';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
 
+
+
 const Frame8:React.FC = () => {
     const [ isOpeningFrame9, setIsOpeningFrame9 ] = useState(false);
-    const [ subjectList, setSubjectList ] = useState([] as OneSubjectDataType[]);
+    const [ subjectList, setSubjectList ] = useState([] as OneSubjectDataType[] );
 
     const subjectRef = database.ref('subject');
 
@@ -17,9 +19,7 @@ const Frame8:React.FC = () => {
     const closeFrame9 = () => {
         setIsOpeningFrame9(false);
     }
-
-    const mockSubjects = ['現代文', '古文', '漢文', '物理', '化学', '生物', '数学IA', '数学IIB', '数学III', '地理A', '地理B', '世界史A', '世界史B', '日本史A', '日本史B', '現代社会', '倫理', '家庭', '体育', '保健', '情報科学', 'アルゴリズムとデータ構造', 'プロジェクト学習'];
-
+    
     useEffect(()=>{
         const user = firebase.auth().currentUser;
         if(!user) return;
@@ -35,9 +35,7 @@ const Frame8:React.FC = () => {
                 const [ id, task ] = data;
                 return { id: id, content: task }
             })
-            console.log(gainedData)
             const gainedSubjects: OneSubjectDataType[] = gainedData as OneSubjectDataType[];
-            console.log(gainedSubjects);
             setSubjectList(gainedSubjects);
         });
     }, []);
@@ -79,7 +77,7 @@ const Frame8:React.FC = () => {
                                                         <HoverElement disableShadow={true} width='auto'>
                                                             <FlexBox justifyContent='space-around' flexDirection='column' alignItems='center' width={ item.content.name.length*2.5 + 'em'} height='4em'>
                                                                 <StyledText size='2em' isClickable={true}>
-                                                                    {item}
+                                                                    {item.content.name}
                                                                 </StyledText>
                                                             </FlexBox>
                                                         </HoverElement>
