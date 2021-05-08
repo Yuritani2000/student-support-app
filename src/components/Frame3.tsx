@@ -21,9 +21,11 @@ const Frame3: React.FC = () => {
         setIsOpeningFrame16(false);
     }
 
+    let day: Date;
+
     const onClickDay = (date: Date) => {
-        //alert('クリックされた日: ' + date.getFullYear() + ' / ' + date.getMonth() + ' / ' + date.getDate())
-        openFrame16()
+        alert('クリックされた日: ' + date.getFullYear() + ' / ' + date.getMonth() + ' / ' + date.getDate())
+        day = date;
     }
 
 const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
@@ -79,7 +81,7 @@ const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
                         </StyledDiv>
                         <StyledDiv flexGrow={1} margin='0 0 0 0 '>
                             <FlexBox alignItems='center'>
-                                <Calendar onClickDay={ ( date: Date )=> {onClickDay(date)}}/>
+                                <Calendar onClickDay={ ( date: Date )=> {onClickDay(date);openFrame16()}}/>
                             </FlexBox>
                         </StyledDiv>
                     </FlexBox>
@@ -94,7 +96,7 @@ const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
                     <StyledDiv noDisplay={!isOpeningFrame16}> 
                         <AbsoluteBox>
                           <StyledDiv width='100vw' height='100vh' backgroundColor='#F5F5F5' >
-                            <Frame16 closeFrame16={closeFrame16}/>
+                            <Frame16 closeFrame16={closeFrame16} />
                           </StyledDiv>
                         </AbsoluteBox>
                     </StyledDiv>

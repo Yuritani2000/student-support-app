@@ -4,8 +4,11 @@ import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
 type Frame16Props = {
-    closeFrame16: () => void;   
+    closeFrame16: () => void;
+    //onClickDay: () => void;      
 }
+
+
 
 const Frame16: React.FC<Frame16Props> = (props) => {
 
