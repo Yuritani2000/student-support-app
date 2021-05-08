@@ -5,10 +5,8 @@ const mockMemo = ['アルゴの課題について', '買い物リスト', 'チ�
 
 type Frame16Props = {
     closeFrame16: () => void;
-    //onClickDay: () => void;      
+    stringDay: string;      
 }
-
-
 
 const Frame16: React.FC<Frame16Props> = (props) => {
 
@@ -16,7 +14,7 @@ const Frame16: React.FC<Frame16Props> = (props) => {
     const month = 0;
     const date = 0; 
 
-    const { closeFrame16 } = props;
+    const { closeFrame16, stringDay } = props;
 
     return (
         <StyledDiv  margin='0% auto 0 auto'
@@ -36,7 +34,7 @@ const Frame16: React.FC<Frame16Props> = (props) => {
                 <StyledDiv flexGrow={2} margin='30px 0 0 0 '>
                     <FlexBox alignItems='center'>
                         <StyledText size='2em' fontWeight='normal'>
-                            {year} / {month} / {date}
+                            {stringDay}                            
                         </StyledText>
                     </FlexBox>
                 </StyledDiv>

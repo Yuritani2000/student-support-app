@@ -13,6 +13,8 @@ const Frame3: React.FC = () => {
 
     const [isOpeningFrame16, setIsOpeningFrame16] = useState(false);
 
+    const [sendDate, setSendDate] = useState('');
+
     const openFrame16 = () =>{
         setIsOpeningFrame16(true);
     }
@@ -21,11 +23,8 @@ const Frame3: React.FC = () => {
         setIsOpeningFrame16(false);
     }
 
-    let day: Date;
-
-    const onClickDay = (date: Date) => {
-        alert('クリックされた日: ' + date.getFullYear() + ' / ' + date.getMonth() + ' / ' + date.getDate())
-        day = date;
+    const onClickDay = (date: Date) => {        
+        setSendDate(date.getFullYear() + ' / ' + date.getMonth() + ' / ' + date.getDate())
     }
 
 const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
@@ -96,7 +95,7 @@ const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
                     <StyledDiv noDisplay={!isOpeningFrame16}> 
                         <AbsoluteBox>
                           <StyledDiv width='100vw' height='100vh' backgroundColor='#F5F5F5' >
-                            <Frame16 closeFrame16={closeFrame16} />
+                            <Frame16 closeFrame16={closeFrame16} stringDay={sendDate} />
                           </StyledDiv>
                         </AbsoluteBox>
                     </StyledDiv>
