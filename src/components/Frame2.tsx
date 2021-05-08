@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Parent, StyledDiv, FlexBox, StyledText, StyledInput, HoverElement, StyledButton, RelativeBox, AbsoluteBox, FixedBox} from './StyledComponents';
-import firebase from '../firebase';
+import firebase, { database } from '../firebase';
 import { Redirect } from 'react-router-dom';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
 import Frame8 from './Frame8';
+import { time } from 'node:console';
+import { start } from 'node:repl';
 
 const Frame2: React.FC = () => {
+
+    enum timeInputTypes {
+        Start,
+        End
+    }
         
     const array = [ [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
@@ -14,6 +21,9 @@ const Frame2: React.FC = () => {
     const [isOpeningFrame8, setIsOpeningFrame8] = useState(false);
     const [ clickedDay, setClickedDay ] = useState(0);
     const [ clickedPeriod, setClickedPeriod ] = useState(0);
+    const [ timeOfPeriods, setTimeOfPeriods ] = useState(new Array<string>(8).fill('00:00-00:00'));
+
+    const timeOfPeriodRef = database.ref('time_of_period');
 
     const openFrame7 = () =>{
         setIsOpeningFrame7(true);
@@ -34,6 +44,62 @@ const Frame2: React.FC = () => {
     const closeFrame8 = () => {
         setIsOpeningFrame8(false);
     }
+
+    const onChangeTime = (startOrEnd: timeInputTypes, period: number, value: string) => {
+        let newArray = timeOfPeriods;
+        if(startOrEnd === timeInputTypes.Start){
+            newArray[period-1] = value + newArray[period-1].slice(5, newArray[period-1].length);
+        }else{
+            newArray[period-1] = newArray[period-1].slice(0,6) + value;
+        }
+        setTimeOfPeriods(newArray);
+        console.log(newArray);
+    }
+
+    // startTimes, endTimesが変わるたびにDBの更新を行い、同時に値を受け取る。
+    useEffect(()=>{
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        const userId = user.uid;
+        if(!userId) return;
+        const timeListRef = timeOfPeriodRef.child(userId);
+        if(!timeListRef) return;
+        timeListRef.update(
+            {
+                "1": timeOfPeriods[0],
+                "2": timeOfPeriods[1],
+                "3": timeOfPeriods[2],
+                "4": timeOfPeriods[3],
+                "5": timeOfPeriods[4],
+                "6": timeOfPeriods[5],
+                "7": timeOfPeriods[6],
+                "8": timeOfPeriods[7],
+                "update_at": new Date().toString(),
+            }
+        );
+    }, [timeOfPeriods]);
+
+    useEffect(()=>{
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        const userId = user.uid;
+        if(!userId) return;
+        const timeListRef = timeOfPeriodRef.child(userId);
+        if(!timeListRef) return;
+        timeListRef.on('value', (snapshot)=>{
+            const timeList = snapshot.val();
+            if(timeList === null) return;
+            const entries = Object.entries(timeList);
+            const gainedData = entries.map((data) => {
+                const [ period, time ] = data;
+                return time;
+            });
+            const gainedTimes: string[] = gainedData as string[];
+            console.log(gainedTimes);
+            setTimeOfPeriods(gainedTimes);
+        })
+    }, []);
+    
 
     const days = ['', '月', '火', '水', '木', '金', '土'];
 
@@ -79,9 +145,9 @@ const Frame2: React.FC = () => {
                                                                                 <FlexBox    flexDirection='row'
                                                                                             alignItems='center'
                                                                                             justifyContent='space-around'>
-                                                                                    <StyledInput type='time' width='70px'  fontSize='1.1em'/>
+                                                                                    <StyledInput value={timeOfPeriods[innerIndex-1].slice(0, 5)} onChange={(e)=>{onChangeTime(timeInputTypes.Start, innerIndex, e.target.value)}} type='time' width='70px'  fontSize='1.1em'/>
                                                                                     <StyledText>～</StyledText>
-                                                                                    <StyledInput type='time'  width='70px' fontSize='1.1em'/>
+                                                                                    <StyledInput value={timeOfPeriods[innerIndex-1].slice(6, timeOfPeriods[innerIndex-1].length)} onChange={(e)=>{onChangeTime(timeInputTypes.End, innerIndex, e.target.value)}}type='time'  width='70px' fontSize='1.1em'/>
                                                                                 </FlexBox>
                                                                             </StyledDiv>
                                                                         : (innerIndex === 0) ? 
