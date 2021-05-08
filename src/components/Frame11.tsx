@@ -5,15 +5,17 @@ import { Redirect } from 'react-router-dom';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
+import Frame14 from './Frame14';
 
 const Frame11:React.FC = () => {
 
-    const mockSubjects = ['現代文', '古文', '漢文', '物理', '化学', '生物', '数学IA', '数学IIB', '数学III', '地理A', '地理B', '世界史A', '世界史B', '日本史A', '日本史B', '現代社会', '倫理', '家庭', '体育', '保健', '情報科学', 'アルゴリズムとデータ構造', 'プロジェクト学習'];
+   // const mockSubjects = ['現代文', '古文', '漢文', '物理', '化学', '生物', '数学IA', '数学IIB', '数学III', '地理A', '地理B', '世界史A', '世界史B', '日本史A', '日本史B', '現代社会', '倫理', '家庭', '体育', '保健', '情報科学', 'アルゴリズムとデータ構造', 'プロジェクト学習'];
 
     const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
     const [isOpeningFrame14, setIsOpeningFrame14] = useState(false);
     const [ subjects, setSubjects ] = useState([] as OneSubjectDataType[]);
-    const [selectedSubject, setSelectedSubject] = useState('');
+    const [ selectedSubject, setSelectedSubject] = useState('');
+
     const subjectRef = database.ref('subject');
 
     const openFrame7 = () =>{
@@ -24,12 +26,16 @@ const Frame11:React.FC = () => {
         setIsOpeningFrame7(false);
     }
 
-    const openFrame14 = (selectedMemo?:string) =>{
-        setIsOpeningFrame7(true);
+    const openFrame14 = (selectedSubject?:string) =>{
+        setIsOpeningFrame14(true);
+        if(!selectedSubject){
+            return;
+        }
+        setSelectedSubject(selectedSubject);
     }
 
     const closeFrame14 = () =>{
-        setIsOpeningFrame7(false);
+        setIsOpeningFrame14(false);
     }
 
     /*const handleClickMatrix = (day: number, period: number) => {
@@ -100,7 +106,7 @@ const Frame11:React.FC = () => {
                                                     return  <StyledDiv enableShadow={true} margin='20px 20px 20px 0' isClickable={true} backgroundColor='#fefefe'>
                                                                 <HoverElement disableShadow={true} width='auto'>
                                                                     <FlexBox justifyContent='space-around' flexDirection='column' alignItems='center' width={ item.content.name.length*2.5 + 'em'} height='4em'>
-                                                                        <StyledText onClick={()=>{ openFrame14()}} size='2em' isClickable={true}>
+                                                                        <StyledText onClick={()=>{ openFrame14(item.id)}} size='2em' isClickable={true}>
                                                                         {item.content.name}
                                                                         </StyledText>
                                                                     </FlexBox>
@@ -114,7 +120,15 @@ const Frame11:React.FC = () => {
                                 </StyledDiv>
                             </FlexBox>
                     </StyledDiv>
-
+                    <StyledDiv noDisplay={!isOpeningFrame14}> 
+                        <AbsoluteBox top='0%' left='0%'>
+                            <StyledDiv width='100vw' height='100vh' backgroundColor='rgb(245, 245, 245)'>
+                                <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
+                                    <Frame14 closeFrame14={() => {closeFrame14()}} selectedSubject={selectedSubject} isOpeningFrame14={isOpeningFrame14}/>
+                                </AbsoluteBox>
+                            </StyledDiv>
+                        </AbsoluteBox>
+                    </StyledDiv>
                     <StyledDiv noDisplay={!isOpeningFrame7} >
                        <FixedBox>
                          <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
