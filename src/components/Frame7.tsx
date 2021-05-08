@@ -48,27 +48,27 @@ const Frame7: React.FC<Frame7Props> = (props) => {
                                     flexDirection='column'
                                     justifyContent='space-around'>
                             <HoverElement>
-                                <StyledText size='1.5em' width='100%' isClickable={true}>
+                                <StyledText onClick={()=>ToTimetable()} size='1.5em' width='100%' isClickable={true}>
                                     時間割
                                 </StyledText>
                             </HoverElement>
                             <HoverElement>
-                                <StyledText size='1.5em' width='100%' isClickable={true}>
+                                <StyledText onClick={()=>ToCalendar()} size='1.5em' width='100%' isClickable={true}>
                                     カレンダー
                                 </StyledText>
                             </HoverElement>
                             <HoverElement>
-                                <StyledText size='1.5em' width='100%' isClickable={true}>
+                                <StyledText onClick={()=>ToNote()} size='1.5em' width='100%' isClickable={true}>
                                     メモ帳
                                 </StyledText>
                             </HoverElement>
                             <HoverElement>
-                                <StyledText size='1.5em' width='100%' isClickable={true}>
+                                <StyledText onClick={()=>ToTaskList()} size='1.5em' width='100%' isClickable={true}>
                                     課題一覧
                                 </StyledText>
                             </HoverElement>
                             <HoverElement>
-                                <StyledText size='1.5em' width='100%' isClickable={true}>
+                                <StyledText onClick={()=>ToSubjectList()} size='1.5em' width='100%' isClickable={true}>
                                     科目一覧
                                 </StyledText>
                             </HoverElement>
