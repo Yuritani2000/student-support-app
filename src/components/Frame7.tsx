@@ -2,6 +2,8 @@ import React from 'react';
 import { HamburgerMenuBase, FlexBox, RelativeBox, AbsoluteBox, StyledText, HoverElement, StyledDiv } from './StyledComponents';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import { useHistory } from "react-router-dom";
+import firebase from '../firebase';
+import { Redirect } from 'react-router-dom';
 
 type Frame7Props = {
     closeFrame7: () => void;   
@@ -29,6 +31,17 @@ const Frame7: React.FC<Frame7Props> = (props) => {
 
     const ToSubjectList = () =>{
         history.push("/frame11")
+    }
+
+    const onClickSignOut = () => { 
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        firebase.auth().signOut().then(()=>{
+            console.log('successfully signed out.');
+            return <Redirect to='/frame1'/>
+        }).catch((error) => {
+            console.log('sign out failed.')
+        })
     }
 
     const { closeFrame7 } = props;
@@ -76,7 +89,7 @@ const Frame7: React.FC<Frame7Props> = (props) => {
                     </AbsoluteBox>
                     <AbsoluteBox width='9em' top='98%' left='98%' translateX={-100} translateY={-100}>
                         <HoverElement backgroundColor='#d2d2d2'>
-                            <StyledText size='1.5em' isClickable={true}>
+                            <StyledText onClick={()=> {onClickSignOut()}} size='1.5em' isClickable={true}>
                                 サインアウト
                             </StyledText>
                         </HoverElement>
