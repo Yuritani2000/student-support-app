@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Parent, StyledDiv, FlexBox, StyledText, StyledInput, HoverElement, StyledButton, RelativeBox, AbsoluteBox, FixedBox} from './StyledComponents';
 import firebase from '../firebase';
 import { Redirect } from 'react-router-dom';
@@ -94,9 +94,9 @@ const Frame2: React.FC = () => {
 
                     <StyledDiv noDisplay={!isOpeningFrame7} >
                        <FixedBox>
-                       <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
-                       <Frame7 closeFrame7={closeFrame7}/>
-                       </StyledDiv>
+                         <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' >
+                           <Frame7 closeFrame7={closeFrame7}/>
+                         </StyledDiv>
                        </FixedBox>
                     </StyledDiv>
 
