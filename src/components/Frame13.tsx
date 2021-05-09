@@ -131,7 +131,7 @@ const Frame13: React.FC<Frame13Props> = (props) => {
                 <StyledDiv flexGrow={2} margin='30px 0 0 0 '>
                     <FlexBox alignItems='center'>
                         <StyledText size='1.8em' fontWeight='normal'>
-                            メモを追加
+                            メモを{(selectedMemo === '' ) ? '追加' : '編集'}
                         </StyledText>
                     </FlexBox>
                 </StyledDiv>
