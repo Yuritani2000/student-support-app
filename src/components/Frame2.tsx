@@ -170,12 +170,7 @@ const Frame2: React.FC = () => {
     const findSubjectId = (index: number, innerIndex: number) => {
         const targetTime = timetable.find(item => (item.content.day_of_week === index && item.content.period === innerIndex));
         if(targetTime) {
-            const targetSubject = subjects.find(item=> item.id === targetTime.content.subject_id)
-            if(targetSubject) {
-                return targetSubject.id;
-            }else{
-                return '';
-            }
+            return targetTime.content.subject_id;
         }else{
             return '';
         }
