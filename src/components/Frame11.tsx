@@ -6,6 +6,7 @@ import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
 import Frame14 from './Frame14';
+import Frame9 from './Frame9';
 
 const Frame11:React.FC = () => {
 
@@ -15,6 +16,15 @@ const Frame11:React.FC = () => {
     const [isOpeningFrame14, setIsOpeningFrame14] = useState(false);
     const [ subjects, setSubjects ] = useState([] as OneSubjectDataType[]);
     const [ selectedSubject, setSelectedSubject] = useState('');
+    const [ isOpeningFrame9, setIsOpeningFrame9 ] = useState(false);
+
+    const openFrame9 = () => {
+        setIsOpeningFrame9(true);
+    }
+    
+    const closeFrame9 = () => {
+        setIsOpeningFrame9(false);
+    }
 
     const subjectRef = database.ref('subject');
 
@@ -98,6 +108,11 @@ const Frame11:React.FC = () => {
                                         </StyledText>
                                     </FlexBox>
                                 </StyledDiv>
+                                <StyledDiv flexGrow={1} height='4em' margin='0 20px 20px 0 ' alignSelf='flex-end'>
+                                <StyledButton onClick={()=>{ openFrame9() }} height='1.5em' width='1.5em' fontSize='3em' fontWeight='normal' backgroundColor='#87cefa' borderRadius='50%'>
+                                    +
+                                </StyledButton>
+                            </StyledDiv>
                                 <StyledDiv flexGrow={20} width='100%' margin='30px 0 30px 0' backgroundColor='#fefefe' enableShadow={true} borderRadius={4}>
                                     <StyledDiv flexGrow={20} width='95%' margin='0 10px 0 20px' backgroundColor='transparent'>
                                         <FlexBox flexDirection='row' flexWrap='wrap'>
@@ -120,6 +135,13 @@ const Frame11:React.FC = () => {
                                 </StyledDiv>
                             </FlexBox>
                     </StyledDiv>
+                    <AbsoluteBox top='0%' left='0%'>
+                    <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' noDisplay={!isOpeningFrame9}>
+                        <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
+                            <Frame9 closeFrame9={closeFrame9}/>
+                        </AbsoluteBox>
+                    </StyledDiv>
+                </AbsoluteBox>
                     <StyledDiv noDisplay={!isOpeningFrame14}> 
                         <AbsoluteBox top='0%' left='0%'>
                             <StyledDiv width='100vw' height='100vh' backgroundColor='rgb(245, 245, 245)'>
