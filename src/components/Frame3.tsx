@@ -82,8 +82,8 @@ const Frame3: React.FC = () => {
                     
                     <StyledDiv noDisplay={!isOpeningFrame16}> 
                         <AbsoluteBox>
-                          <StyledDiv width='100vw' backgroundColor='#F5F5F5' >
-                            <Frame16 closeFrame16={closeFrame16} stringDay={sendDate} />
+                          <StyledDiv width='100vw' height='100vh' backgroundColor='#F5F5F5' >
+                            <Frame16 closeFrame16={closeFrame16} stringDay={sendDate} isOpeningFrame16={isOpeningFrame16}/>
                           </StyledDiv>
                         </AbsoluteBox>
                     </StyledDiv>
