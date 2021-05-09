@@ -137,6 +137,43 @@ const Frame14: React.FC<Frame14Props> = (props) => {
         if(tasks.length === 1) setTasks([]);
     }
 
+    const deleteSubject = (targetId: string) => {
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        const userId = user.uid;
+        if(!userId) return;
+  
+        const listRef = subjectRef.child(userId);
+        const SubjectRef = listRef.child('/' + targetId);
+        if(!SubjectRef) return;
+        SubjectRef.remove();
+        pushDelete(selectedSubject);
+        closeFrame14();
+    }
+
+    const pushDelete = (targetId: string) => {
+        const now = new Date(); // タイムスタンプ用のdateオブジェクト
+        const currentTimeStamp = now.getTime(); // 1970年からの現在の時刻を、ミリ秒単位で取得する。
+        const user = firebase.auth().currentUser;   // 現在ログインしているユーザーを取得する。
+        if(!user){/* nullチェック */ return; }
+        const userId = user.uid;// ユーザーIDの取得
+        if(!userId){/* nullチェック */ return; }
+        console.log('post todo as: ' + userId);
+        const listRef = taskAndTodoRef.child(userId);
+        if(!listRef) {
+            return;
+        }
+        tasks.map((item) =>{
+            const taegetTaskRef = listRef.child(item.id);
+            if(!taegetTaskRef){
+                return;
+            }
+            taegetTaskRef.update({
+                "subject_id": 'default',
+              });
+        })
+    }
+
     return (
         <StyledDiv  margin='0% auto 0 auto'
         width='min( calc(683px + (100vw - 683px)*0.4 ), 100vw )'
@@ -157,6 +194,9 @@ const Frame14: React.FC<Frame14Props> = (props) => {
                         <StyledText size='1.8em' fontWeight='normal'>
                             {subjectName}
                         </StyledText>
+                        <StyledButton onClick={() =>{deleteSubject(selectedSubject)}} width='4.5rem' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
+                        科目を削除
+                    </StyledButton>
                     </FlexBox>
                 </StyledDiv>
                 <StyledDiv flexGrow={2} margin='30px 0 0 0 ' alignSelf='flex-start'>
