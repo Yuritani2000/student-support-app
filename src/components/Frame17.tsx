@@ -1,23 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, StyledTextArea } from './StyledComponents';
 import firebase, { database } from '../firebase';
-import { CalendarMemoType } from '../DataTypes/CalendarMemoTypes'
+import { CalendarMemoType, CalendarMemoDataType } from '../DataTypes/CalendarMemoTypes'
 
 const mockMemo = ['アルゴの課題について', '買い物リスト', 'チケットの予約', '欲しいものリスト', 'ポエム', 'ポエム2'];
 
 type Frame17Props = {
     closingFrame17: () => void;
     stringDay: string;
+    selectedCalendarMemo?: string;
+    isOpeningFrame17: boolean;
 }
 
 const calendarRef = database.ref('calendar');
 
 const Frame17: React.FC<Frame17Props> = (props) => {
 
-    const { closingFrame17, stringDay } = props;
+    const { closingFrame17, stringDay , selectedCalendarMemo='', isOpeningFrame17} = props;
 
     const [calendarMemoTitle, setCalendarMemoTitle] = useState('');
     const [calendarMemoContents, setCalendarMemoContents] = useState('');
+    const [calendarMemos, setCalendarMemos ] = useState([] as CalendarMemoDataType[]);
 
     const onChangeTitle = (value: string) => {
         setCalendarMemoTitle(value);
@@ -46,18 +49,87 @@ const Frame17: React.FC<Frame17Props> = (props) => {
         const StringDay = stringDay;
         if (!StringDay) { return; }
         const listRef = calendarRef.child(userId).child(StringDay);
+        if(selectedCalendarMemo===''){
         const newObject: CalendarMemoType = {
-            title: calendarMemoTitle,
+            title: (calendarMemoTitle==='') ? '無題のメモ' : calendarMemoTitle,
             contents: calendarMemoContents,
             create_at: now.toString(),
             update_at: now.toString(),
         }
         if (!listRef) return;
         listRef.push(newObject);
+        }else{
+        const targetMemoRef = listRef.child(selectedCalendarMemo);
+        targetMemoRef.update({
+            "title": calendarMemoTitle,
+            "contents": calendarMemoContents,
+            "update_at": now.toString(),
+          });
+    }
     }
 
+    useEffect(()=>{
+        //console.log("in");
+        // ユーザーの情報を取得。それぞれnullチェックを行う。
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        //console.log("in1");
+        const userId = user.uid;
+        if(!userId) return;
+        //console.log("in2");
+        // pathを指定して、データへの参照を取得。
+        const StringDay = stringDay;
+        if (!StringDay) return;
+       // console.log("in3");
+        const listRef = calendarRef.child(userId).child(StringDay);
+        if(!listRef) return;
+        //console.log("in4");
+        // onメソッドは、参照先のデータを取得するメソッド。
+        listRef.on('value', (snapshot) => {
+            const memos = snapshot.val();
+            if(memos === null) return;
+            // entriesには、オブジェクトのキー値（自動生成されたもの）と、中身の値（オブジェクト）のペアが配列になって返ってくるようだ。
+            const entries = Object.entries(memos);
+            // entriesをオブジェクトに直す
+            const gainedData = entries.map((data) => {
+                const [ id, memo ] = data;
+                return { id: id, content: memo }
+            })
+
+            const gainedMemos: CalendarMemoDataType[] = gainedData as CalendarMemoDataType[];
+            setCalendarMemos(gainedMemos);
+            console.log(gainedMemos);
+        })
+    }, [isOpeningFrame17]);
+
+    useEffect(()=>{
+        
+        const foundMemo = calendarMemos.find((item) => item.id===selectedCalendarMemo);
+        if(!foundMemo){
+            console.log("a");
+            setCalendarMemoTitle('');
+            setCalendarMemoContents('');
+        }else{
+            console.log("b");
+            if(!foundMemo.content.title){
+                console.log("c");
+                setCalendarMemoTitle('');
+            }else{
+                console.log("d");
+                setCalendarMemoTitle(foundMemo.content.title)
+            }
+            if(!foundMemo.content.contents){
+                console.log("e");
+                setCalendarMemoContents('')
+            }else{
+                console.log("f");
+                setCalendarMemoContents(foundMemo.content.contents)
+            }
+    }
+    }, [calendarMemos])
+
     return (
-        <StyledDiv margin='5% auto 0 auto'
+        <StyledDiv margin='0% auto 0 auto'
             width='min( calc(683px + (100vw - 683px)*0.4 ), 100vw )'
             height='auto'
             backgroundColor='transparent'
@@ -74,19 +146,21 @@ const Frame17: React.FC<Frame17Props> = (props) => {
                 <StyledDiv flexGrow={2} margin='30px 0 0 0 '>
                     <FlexBox alignItems='center'>
                         <StyledText size='1.8em' fontWeight='normal'>
-                            メモを追加
+                        メモを{(selectedCalendarMemo === '' ) ? '追加' : '編集'}
                         </StyledText>
                     </FlexBox>
                 </StyledDiv>
                 <StyledDiv flexGrow={20} width='95%' margin='20px 0 30px 0' >
-                    <StyledInput onChange={(e) => { onChangeTitle(e.target.value) }}
+                    <StyledInput value={calendarMemoTitle}
+                        onChange={(e) => { onChangeTitle(e.target.value) }}
                         fontSize='1.5em'
                         height='2em'
                         width='100%'
                         placeholder='題名' />
                 </StyledDiv>
                 <StyledDiv flexGrow={20} width='95%' margin='20px 0 30px 0' >
-                    <StyledTextArea onChange={(e) => { onChangeContents(e.target.value) }}
+                    <StyledTextArea value={calendarMemoContents}
+                        onChange={(e) => { onChangeContents(e.target.value) }}
                         id='textArea'
                         fontSize='2em'
                         height='10cm'

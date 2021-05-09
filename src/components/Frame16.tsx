@@ -20,8 +20,15 @@ const Frame16: React.FC<Frame16Props> = (props) => {
 
     const [isOpeningFrame17, setIsOpeningFrame17] = useState(false);
 
-    const openingFrame17 = () => {
+    const [ selectedCalendarMemo, setSelectedCalendarMemo ] = useState('');
+
+    const openingFrame17 = (selectedMemo?:string) => {
         setIsOpeningFrame17(true);
+        if(!selectedMemo){
+         setSelectedCalendarMemo('');
+        return;
+        }
+        setSelectedCalendarMemo(selectedMemo);
     }
     
     const closingFrame17 = () => {
@@ -32,7 +39,7 @@ const Frame16: React.FC<Frame16Props> = (props) => {
 
     const calendarRef = database.ref('calendar');
 
-    const deleteCalendarMemo = (targetId: string, targetDate: string) => {
+    const deleteCalendarMemo = (targetId: string) => {
         
         const user = firebase.auth().currentUser;
         if(!user) return;
@@ -42,7 +49,7 @@ const Frame16: React.FC<Frame16Props> = (props) => {
         const targetTask = calendarMemo.find((item) => item.id === targetId);
         if(!targetTask) return;
         const listRef = calendarRef.child(userId);
-        const targetRef = listRef.child('/' + targetTask.id);
+        const targetRef = listRef.child(stringDay).child('/' + targetTask.id);
         if(!targetRef) return;
         targetRef.remove();
         if(calendarMemo.length === 1) setCalendarMemo([]);
@@ -109,10 +116,10 @@ const Frame16: React.FC<Frame16Props> = (props) => {
                                     calendarMemo.map((item) => {
                                         return <StyledDiv width='100%' enableShadow={true} margin='20px 20px 0 0' isClickable={true} backgroundColor='#fefefe' borderRadius={4}>
                                             <FlexBox justifyContent='space-around' flexDirection='row' alignItems='center' height='4.5em' >
-                                                <StyledText size='1.7em' isClickable={true} width='95%' >
+                                                <StyledText  onClick={() => openingFrame17(item.id)} size='1.7em' isClickable={true} width='95%' >
                                                     {item.content.title}
                                                 </StyledText>
-                                                <StyledButton onClick={() => deleteCalendarMemo(item.id, stringDay)} width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
+                                                <StyledButton onClick={() => deleteCalendarMemo(item.id)} width='4.5em' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
                                                     削除
                                                 </StyledButton>
                                             </FlexBox>
@@ -125,8 +132,8 @@ const Frame16: React.FC<Frame16Props> = (props) => {
                     </FlexBox>
                     <StyledDiv noDisplay={!isOpeningFrame17} >
                        <AbsoluteBox>
-                         <StyledDiv width='100vw' backgroundColor='rgba(0, 0, 0, 0.2)' >
-                           <Frame17 closingFrame17={closingFrame17} stringDay={stringDay}/>
+                         <StyledDiv width='100vw'  backgroundColor='#f5f5f5' >
+                           <Frame17 closingFrame17={closingFrame17} stringDay={stringDay} selectedCalendarMemo={selectedCalendarMemo} isOpeningFrame17={isOpeningFrame17}/>
                          </StyledDiv>
                        </AbsoluteBox>
                     </StyledDiv>
