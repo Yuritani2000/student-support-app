@@ -5,9 +5,12 @@ import { Redirect } from 'react-router-dom';
 import HamburgerMenuButton from './HamburgerMenuButton';
 import Frame7 from './Frame7';
 import Frame8 from './Frame8';
+import Frame14 from './Frame14';
 import { time } from 'node:console';
 import { start } from 'node:repl';
 import { isConstructorDeclaration } from 'typescript';
+import { TimetableDataType } from '../DataTypes/TimetableDataTypes';
+import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
 
 const Frame2: React.FC = () => {
 
@@ -20,11 +23,17 @@ const Frame2: React.FC = () => {
 
     const [isOpeningFrame7, setIsOpeningFrame7] = useState(false);
     const [isOpeningFrame8, setIsOpeningFrame8] = useState(false);
+    const [isOpeningFrame14, setIsOpeningFrame14] = useState(false);
     const [ clickedDay, setClickedDay ] = useState(0);
     const [ clickedPeriod, setClickedPeriod ] = useState(0);
     const [ timeOfPeriods, setTimeOfPeriods ] = useState(new Array<string>(8).fill('00:00-00:00'));
+    const [ timetable, setTimetable ] = useState([] as TimetableDataType[]);
+    const [ subjects, setSubjects ] = useState([] as OneSubjectDataType[]);
+    const [ selectedSubject, setSelectedSubject ] = useState('');
 
     const timeOfPeriodRef = database.ref('time_of_period');
+    const timetableRef = database.ref('timetable');
+    const subjectRef = database.ref('subject');
 
     const openFrame7 = () =>{
         setIsOpeningFrame7(true);
@@ -34,16 +43,26 @@ const Frame2: React.FC = () => {
         setIsOpeningFrame7(false);
     }
 
-    const openFrame8 = (day: number, period: number) => {
+    const openFrame8or9 = (day: number, period: number) => {
         console.log('(' + day +  ', ' + period + ') clicked');
         if(day === 0 || period === 0) return;
         setClickedDay(day)
         setClickedPeriod(period);
-        setIsOpeningFrame8(true);
+        const targetSubjectId = findSubjectId(day, period);
+        if(!targetSubjectId){
+            setIsOpeningFrame8(true);
+        }else{
+            setSelectedSubject(targetSubjectId);
+            setIsOpeningFrame14(true);
+        }
     }
 
     const closeFrame8 = () => {
         setIsOpeningFrame8(false);
+    }
+
+    const closeFrame14 = () => {
+        setIsOpeningFrame14(false);
     }
 
     const onChangeTime = (startOrEnd: timeInputTypes, period: number, value: string) => {
@@ -97,10 +116,70 @@ const Frame2: React.FC = () => {
             console.log(filteredTimes);
             setTimeOfPeriods(filteredTimes);
         })
+
+        const timetableListRef = timetableRef.child(userId);
+        if(!timetableListRef) return;
+        timetableListRef.on('value', (snapshot) => {
+            const timetableList = snapshot.val();
+            if(timetableList === null) return;
+            const entries = Object.entries(timetableList);
+            const gainedData = entries.map((data) => {
+                const [ id, content ] = data;
+                return { id: id, content: content}
+            })
+            const gainedTimetable: TimetableDataType[] = gainedData as TimetableDataType[];
+            console.log(gainedTimetable);
+            setTimetable(gainedTimetable);
+        })
+
+        const subjectListRef = subjectRef.child(userId);
+        if(!subjectListRef) return;
+        subjectListRef.on('value', (snapshot) => {
+            const subjectList = snapshot.val();
+            if(subjectList === null) return;
+            const entries = Object.entries(subjectList);
+            const gainedData = entries.map((data)=>{
+                const [ id, content ] = data;
+                return { id: id, content: content }
+            })
+            const gainedSubjects: OneSubjectDataType[] = gainedData as OneSubjectDataType[];
+            console.log(gainedSubjects);
+            setSubjects(gainedSubjects);
+        })
     }, []);
     
 
     const days = ['', '月', '火', '水', '木', '金', '土'];
+
+    const findSubjectName = (index: number, innerIndex: number) => {
+        const targetTime = timetable.find(item => (item.content.day_of_week === index && item.content.period === innerIndex));
+        if(targetTime) {
+            const targetSubject = subjects.find(item=> item.id === targetTime.content.subject_id)
+            if(targetSubject) {
+                return targetSubject.content.name;
+            }else{
+                console.log('科目を見つけられませんでした。: ' + index + ' ' +  innerIndex + '時間目');
+                return '+';
+            }
+        }else{
+            console.log('時間割を見つけられませんでした。: ' + index + ' ' +  innerIndex + '時間目');
+            return '+';
+        }
+    }
+
+    const findSubjectId = (index: number, innerIndex: number) => {
+        const targetTime = timetable.find(item => (item.content.day_of_week === index && item.content.period === innerIndex));
+        if(targetTime) {
+            const targetSubject = subjects.find(item=> item.id === targetTime.content.subject_id)
+            if(targetSubject) {
+                return targetSubject.id;
+            }else{
+                return '';
+            }
+        }else{
+            return '';
+        }
+    }
 
     const render = () =>{
         if(firebase.auth().currentUser){
@@ -127,7 +206,7 @@ const Frame2: React.FC = () => {
                                 array.map((innerArray, index)=>
                                     {
                                         return <FlexBox width='auto' flexDirection='column'>{innerArray.map( (value, innerIndex) => {
-                                            return  <StyledDiv  onClick={()=>openFrame8(index, innerIndex)}
+                                            return  <StyledDiv  onClick={()=>openFrame8or9(index, innerIndex)}
                                                                     width={(index===0) ? '180px' : '120px'}
                                                                     height='80px'
                                                                     isClickable={(innerIndex === 0) ? false : true}
@@ -157,7 +236,7 @@ const Frame2: React.FC = () => {
                                                                             </StyledDiv>
                                                                         : 
                                                                                 <StyledButton width='100%' height='100%' backgroundColor='#fefefe' fontSize='1.5em' disableShadow={true} enableHoverEvent={true}>
-                                                                                    +
+                                                                                    {findSubjectName(index, innerIndex)}
                                                                                 </StyledButton>}
                                                         </StyledDiv>
                                         })}
@@ -185,6 +264,16 @@ const Frame2: React.FC = () => {
                     <StyledDiv noDisplay={!isOpeningFrame8}>
                         <AbsoluteBox top='5%' left='50%' translateX={-50} translateY={0}>
                             <Frame8 clickedDay={clickedDay} clickedPeriod={clickedPeriod} closeFrame8={closeFrame8}/>
+                        </AbsoluteBox>
+                    </StyledDiv>
+
+                    <StyledDiv noDisplay={!isOpeningFrame14}> 
+                        <AbsoluteBox top='0%' left='0%'>
+                            <StyledDiv width='100vw' height='100vh' backgroundColor='rgb(245, 245, 245)'>
+                                <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
+                                    <Frame14 closeFrame14={() => {closeFrame14()}} selectedSubject={selectedSubject} isOpeningFrame14={isOpeningFrame14}/>
+                                </AbsoluteBox>
+                            </StyledDiv>
                         </AbsoluteBox>
                     </StyledDiv>
 
