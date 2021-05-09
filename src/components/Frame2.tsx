@@ -257,7 +257,7 @@ const Frame2: React.FC = () => {
                         </FixedBox>
                     </StyledDiv>
                     <StyledDiv noDisplay={!isOpeningFrame8}>
-                        <AbsoluteBox top='5%' left='50%' translateX={-50} translateY={0}>
+                        <AbsoluteBox top='0%' left='0%' translateX={0} translateY={0}>
                             <Frame8 clickedDay={clickedDay} clickedPeriod={clickedPeriod} closeFrame8={closeFrame8}/>
                         </AbsoluteBox>
                     </StyledDiv>

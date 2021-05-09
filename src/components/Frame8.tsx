@@ -75,7 +75,7 @@ const Frame8:React.FC<Frame8Props> = (props) => {
                             enableShadow={false}
                             width='min( calc(683px + (100vw - 683px)*0.5 ), 100vw )'
                             height='auto'
-                            margin='auto'
+                            margin='30px auto 0 100px'
                             borderRadius={4}>
                         <FlexBox    alignItems='center'
                                     justifyContent='space-around'
@@ -117,7 +117,7 @@ const Frame8:React.FC<Frame8Props> = (props) => {
                                 </StyledDiv>
                             </StyledDiv>
                         </FlexBox>
-                </StyledDiv>
+                    </StyledDiv>
                 <AbsoluteBox top='0%' left='0%'>
                     <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' noDisplay={!isOpeningFrame9}>
                         <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
