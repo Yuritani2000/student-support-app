@@ -3,6 +3,7 @@ import { AbsoluteBox, FlexBox, HoverElement, RelativeBox, StyledButton, StyledDi
 import Frame9 from './Frame9';
 import firebase, { database } from '../firebase';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
+import { TimetableType } from '../DataTypes/TimetableDataTypes';
 
 type Frame8Props = {
     clickedDay: number;
@@ -17,6 +18,9 @@ const Frame8:React.FC<Frame8Props> = (props) => {
     const { clickedDay, clickedPeriod, closeFrame8 } = props;
 
     const subjectRef = database.ref('subject');
+    const timetableRef = database.ref('timetable');
+
+    const days = ['', '月', '火', '水', '木', '金', '土'];
 
     const openFrame9 = () => {
         setIsOpeningFrame9(true);
@@ -24,6 +28,24 @@ const Frame8:React.FC<Frame8Props> = (props) => {
     
     const closeFrame9 = () => {
         setIsOpeningFrame9(false);
+    }
+
+    const onClickSubject = (subjectId: string) => {
+        const user = firebase.auth().currentUser;
+        if(!user) return;
+        const userId = user.uid;
+        if(!userId) return;
+        const timetableListRef = timetableRef.child(userId);
+        if(!timetableListRef) return;
+        const newData: TimetableType = {
+            create_at: new Date().toString(),
+            day_of_week: clickedDay,
+            period: clickedPeriod,
+            subject_id: subjectId,
+            update_at: new Date().toString()
+        }
+        timetableListRef.push(newData);
+        closeFrame8();
     }
     
     useEffect(()=>{
@@ -53,7 +75,7 @@ const Frame8:React.FC<Frame8Props> = (props) => {
                             enableShadow={false}
                             width='min( calc(683px + (100vw - 683px)*0.5 ), 100vw )'
                             height='auto'
-                            margin='auto'
+                            margin='30px auto 0 100px'
                             borderRadius={4}>
                         <FlexBox    alignItems='center'
                                     justifyContent='space-around'
@@ -66,7 +88,7 @@ const Frame8:React.FC<Frame8Props> = (props) => {
                             <StyledDiv flexGrow={1} >
                                 <FlexBox alignItems='center'>
                                     <StyledText fontWeight='normal' size='2em' >
-                                        時間割追加
+                                        {days[clickedDay]}曜日 {clickedPeriod}時限目
                                     </StyledText>
                                 </FlexBox>
                             </StyledDiv>
@@ -80,7 +102,7 @@ const Frame8:React.FC<Frame8Props> = (props) => {
                                     <FlexBox flexDirection='row' flexWrap='wrap'>
                                         {
                                             subjectList.map((item) => {
-                                                return  <StyledDiv key={item.id} enableShadow={true} margin='20px 20px 20px 0' isClickable={true} backgroundColor='#fefefe'>
+                                                return  <StyledDiv onClick={()=> onClickSubject(item.id)} key={item.id} enableShadow={true} margin='20px 20px 20px 0' isClickable={true} backgroundColor='#fefefe'>
                                                             <HoverElement disableShadow={true} width='auto'>
                                                                 <FlexBox justifyContent='space-around' flexDirection='column' alignItems='center' width={ item.content.name.length*2.5 + 'em'} height='4em'>
                                                                     <StyledText size='2em' isClickable={true}>
@@ -95,7 +117,7 @@ const Frame8:React.FC<Frame8Props> = (props) => {
                                 </StyledDiv>
                             </StyledDiv>
                         </FlexBox>
-                </StyledDiv>
+                    </StyledDiv>
                 <AbsoluteBox top='0%' left='0%'>
                     <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)' noDisplay={!isOpeningFrame9}>
                         <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
