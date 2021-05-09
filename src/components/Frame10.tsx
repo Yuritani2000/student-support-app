@@ -187,12 +187,13 @@ const Frame10: React.FC = () => {
                         </StyledDiv>
                     </FlexBox>
                     <StyledDiv noDisplay={!isOpeningFrame15}> 
-                        <AbsoluteBox top='0%' left='0%'>
-                            <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)'>
-                                <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
-                                    <Frame15 closeFrame15={closeFrame15}/>
-                                </AbsoluteBox>
-                            </StyledDiv>
+                        <FixedBox top='0%' left='0%'>
+                            <StyledDiv width='100vw' height='100vh' backgroundColor='rgba(0, 0, 0, 0.2)'/>
+                        </FixedBox>
+                    </StyledDiv>
+                    <StyledDiv noDisplay={!isOpeningFrame15}> 
+                        <AbsoluteBox top='0%' left='50%' translateX={-50} translateY={0}>
+                            <Frame15 closeFrame15={closeFrame15}/>
                         </AbsoluteBox>
                     </StyledDiv>
 
