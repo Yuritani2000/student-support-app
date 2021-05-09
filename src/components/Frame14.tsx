@@ -170,7 +170,7 @@ const Frame14: React.FC<Frame14Props> = (props) => {
         if(!SubjectRef) return;
         SubjectRef.remove();
         pushDelete(selectedSubject);
-        closeFrame14();
+        deleteCourseCancellation()
     }
 
     const pushDelete = (targetId: string) => {
@@ -187,6 +187,7 @@ const Frame14: React.FC<Frame14Props> = (props) => {
         }
         tasks.map((item) =>{
             const taegetTaskRef = listRef.child(item.id);
+
             if(!taegetTaskRef){
                 return;
             }
