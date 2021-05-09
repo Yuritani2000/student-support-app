@@ -4,9 +4,8 @@ export type CalendarMemoDataType = {
 }
 
 export type CalendarMemoType = {
-    title: string;
     contents: string;
-    date: string;
     create_at: string;
+    title: string;    
     update_at: string;
 }
