@@ -3,6 +3,7 @@ import { FlexBox, StyledDiv, StyledButton, StyledText, StyledInput, HoverElement
 import CheckButton from './CheckButton';
 import firebase, { database } from '../firebase';
 import { OneSubjectDataType } from '../DataTypes/SubjectTypes';
+import { TimetableDataType } from '../DataTypes/TimetableDataTypes';
 import { TaskAndTodoDataType } from '../DataTypes/TaskAndTodoDataTypes';
 import Frame15 from './Frame15';
 const mockHomework = ['教科書演習問題1', 'アドバンスプラスp.22-p.24']
@@ -23,9 +24,10 @@ const Frame14: React.FC<Frame14Props> = (props) => {
     const [subjectMemo, setSubjectMemo] = useState('');
     const [subjectName, setSubjectName] = useState('');
     const [isOpeningFrame15, setIsOpeningFrame15] = useState(false);
+    const [timetables, setTimetables] = useState([] as TimetableDataType[])
     const taskAndTodoRef = database.ref('task_and_todo');
     const subjectRef = database.ref('subject');
-
+    const timetableRef = database.ref('timetable');
 
     const openFrame15 = () =>{
         setIsOpeningFrame15(true);
@@ -34,7 +36,10 @@ const Frame14: React.FC<Frame14Props> = (props) => {
     const closeFrame15 = () =>{
         setIsOpeningFrame15(false);
     }
-
+   /* let loc = location.origin;
+    document.querySelector('.location')
+        .innerHTML = loc;
+        */
     useEffect(()=>{
         console.log("Effect");
         // ユーザーの情報を取得。それぞれnullチェックを行う。
@@ -66,7 +71,6 @@ const Frame14: React.FC<Frame14Props> = (props) => {
         const listRef2 = subjectRef.child(userId);
         if(!listRef2) return;
         // onメソッドは、参照先のデータを取得するメソッド。
-        
         listRef2.on('value', (snapshot) => {
             const subjects = snapshot.val();
             if(subjects === null) return;
@@ -86,6 +90,24 @@ const Frame14: React.FC<Frame14Props> = (props) => {
             }
             setSubjectName(filteredSubjects.content.name);
             setSubjectMemo(filteredSubjects.content.memo);
+        })
+        const listRef3 = timetableRef.child(userId);
+        listRef3.on('value', (snapshot) => {
+            const timetables = snapshot.val();
+            if(timetables === null) return;
+            // entriesには、オブジェクトのキー値（自動生成されたもの）と、中身の値（オブジェクト）のペアが配列になって返ってくるようだ。
+            const entries = Object.entries(timetables);
+            // entriesをオブジェクトに直す
+            const gainedData = entries.map((data) => {
+                const [ id, timetable ] = data;
+                return { id: id, content: timetable }
+            })
+            const gainedTimetables: TimetableDataType[] = gainedData as TimetableDataType[];
+            const filteredTimetables = gainedTimetables.filter((item) => item.content.subject_id === selectedSubject);
+            if(!filteredTimetables){
+                return;
+            }
+            setTimetables(filteredTimetables);
         })
     }, [isOpeningFrame14]);
 
@@ -174,6 +196,26 @@ const Frame14: React.FC<Frame14Props> = (props) => {
         })
     }
 
+    const deleteCourseCancellation = () =>{
+        const user = firebase.auth().currentUser;   // 現在ログインしているユーザーを取得する。
+        if(!user){/* nullチェック */ return; }
+        const userId = user.uid;// ユーザーIDの取得
+        if(!userId){/* nullチェック */ return; }
+        console.log('post todo as: ' + userId);
+        const listRef = timetableRef.child(userId);
+            if(!listRef) {
+                return;
+            }
+            timetables.map((item) =>{
+                const targetDeleteTimetableRef = listRef.child(item.id);
+                if(!targetDeleteTimetableRef){
+                    return;
+                }
+                targetDeleteTimetableRef.remove();
+                window.location.reload();
+            })
+    }
+    
     return (
         <StyledDiv  margin='0% auto 0 auto'
         width='min( calc(683px + (100vw - 683px)*0.4 ), 100vw )'
@@ -185,8 +227,11 @@ const Frame14: React.FC<Frame14Props> = (props) => {
                 alignItems='center'
                 justifyContent='space-around'>
                 <StyledDiv flexGrow={1} height='3em' margin='20px 0 0 20px ' alignSelf='flex-start'>
-                    <StyledButton  onClick={()=>{closeFrame14();}}width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
+                    <StyledButton  onClick={()=>{closeFrame14()}}width='3.5em'　height='2em' fontSize='1.5em' fontWeight='normal'>
                         戻る
+                    </StyledButton>
+                    <StyledButton onClick={() =>{deleteCourseCancellation()}} width='11rem' height='4.5rem' fontSize='1.2em' fontColor='#fefefe' fontWeight='bold' backgroundColor='#ff4500' borderRadius='4px'>
+                        この科目の全ての履修状態を削除
                     </StyledButton>
                 </StyledDiv>
                 <StyledDiv flexGrow={2} margin='30px 0 0 0 '>
