@@ -10,6 +10,7 @@
 - データベース: Firebase Realtime Database
 - ユーザ認証: Firebase Authentication
 - ホスティング: Firebase
+- バージョン管理: Git/GitHub
 
 ## 動作確認方法
 - masterブランチをローカル環境にclone後、そのローカルリポジトリのディレクトリ内でターミナルを起動し、
