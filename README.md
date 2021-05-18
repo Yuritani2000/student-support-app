@@ -1,46 +1,47 @@
-# Getting Started with Create React App
+## アプリ概要
+サポーターズ様主催のハッカソン「技育CAMP」（2021年5月8日・9日開催）にて制作した学生支援Webアプリです。
+大学の友人と共に3人で制作いたしました。
+製作期間：2021年5月1日から2021年5月9日(9日間)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 技術概要
+- 使用言語: TypeScript
+- 使用フレームワーク: Node.js, React
+- 使用ライブラリ: Styled-Components, React-Calendar
+- データベース: Firebase Realtime Database
+- ユーザ認証: Firebase Authentication
+- ホスティング: Firebase
 
-## Available Scripts
+## 動作確認方法
+- masterブランチをローカル環境にclone後、そのローカルリポジトリのディレクトリ内でターミナルを起動し、
+- `yarn install`を実行してください(事前にnode.js及びyarnのインストールが必要となります)。
+- 次に、各自Firebaseにてプロジェクトを作成していただき、Firebaseのコンソールから、Authenticationのメール/パスワードによる認証を有効にしてください。また、Realtime Databaseを有効にしてください。
+- Firebaseのコンソールから、「プロジェクトを設定」→「マイアプリ」を確認していただき、表示されているURLの以下項目をご確認ください。
 
-In the project directory, you can run:
+```javascript
+   var firebaseConfig = {
+    apiKey: "任意の文字列1",
+    authDomain: "任意の文字列2",
+    databaseURL: "任意の文字列3",
+    projectId: "任意の文字列4",
+    storageBucket: "任意の文字列5",
+    messagingSenderId: "任意の文字列6",
+    appId: "任意の文字列7",
+    measurementId: "任意の文字列8"
+  };
+```
 
-### `yarn start`
+- ローカルリポジトリ直下に、`.env.local`のファイル名でファイルを作成していただき、上記コードの各項目に対応する「任意の文字列(番号)」の部分を、以下の形式に合わせコピー&ペーストしてください。
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```javascript
+REACT_APP_FIREBASE_API_KEY='任意の文字列1'
+REACT_APP_FIREBASE_AUTH_DOMAIN='任意の文字列2'
+REACT_APP_FIREBASE_DATABASE_URL='任意の文字列3'
+REACT_APP_FIREBASE_PROJECT_ID='任意の文字列4'
+REACT_APP_FIREBASE_STORAGE_BUCKET='任意の文字列5'
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID='任意の文字列6'
+REACT_APP_FIREBASE_APP_ID='任意の文字列7'
+REACT_APP_FIREBASE_MEASUREMENT_ID='任意の文字列8'
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- 処理が終了したのちに、`yarn start`を実行していただくと、自動的にブラウザが起動し、サインイン画面が表示されます。
+- 「Sign upはこちら」をクリックするとアカウント作成画面へ移動しますので、そこで架空のメールアドレス及びパスワードを使用してアカウントを作成してください。
